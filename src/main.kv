@@ -2,21 +2,15 @@
     BoxLayout:
         orientation: 'vertical'
         Button:
-            text: 'start'
+            text: 'Start Session'
             on_press: root.start()
             # Choose an image and uncomment:
             #background_down: 'button_pressed.png'
             #background_normal: 'button_normal.png'
             #color: [0, 0, 0, 1]
         Button:
-            text: 'stop'
+            text: 'Reset Session'
             on_press: root.stop()
-            # If you have a favourite font, you can use that:
-            #font_name: 'font_name.ttf'
-            #font_size: '22dp'
-        Button:
-            text: 'Set to 0'
-            on_press: root.number = 0
     Label:
         text: str(root.number)
         text_size: self.size
