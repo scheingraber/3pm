@@ -1,3 +1,5 @@
 src/__pycache__
 pkg
 .idea
+build
+dist
