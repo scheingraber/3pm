@@ -4,8 +4,8 @@ from kivy.deps import sdl2, glew
 block_cipher = None
 
 
-a = Analysis(['..\\src\\main.py'],
-             pathex=['D:\\projects\\3pm\\pkg'],
+a = Analysis(['src\\main.py'],
+             pathex=['D:\\projects\\3pm'],
              binaries=[],
              datas=[],
              hiddenimports=[],
@@ -24,8 +24,8 @@ exe = EXE(pyz,
           debug=False,
           strip=False,
           upx=False,
-          console=True )
-coll = COLLECT(exe, Tree('..\\src\\'),
+          console=False )
+coll = COLLECT(exe, Tree('src\\'),
                a.binaries,
                a.zipfiles,
                a.datas,
