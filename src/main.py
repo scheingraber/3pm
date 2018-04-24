@@ -1,12 +1,13 @@
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.properties import NumericProperty
-from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.clock import Clock
 
 
-class MainWidget(BoxLayout):
+class MainWidget(GridLayout):
     number = NumericProperty(35)
+
     def __init__(self, **kwargs):
         super(MainWidget, self).__init__(**kwargs)
         Clock.schedule_interval(self.decrement_time, .1)
@@ -22,6 +23,7 @@ class MainWidget(BoxLayout):
     def stop(self):
         self.number = 35
         Clock.unschedule(self.decrement_time)
+
 
 class mainApp(App):
     def build(self):
