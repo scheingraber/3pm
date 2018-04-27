@@ -1,12 +1,12 @@
 # PyPomoProjectManager (3pm)
 -----------------------------
 
-###Info
+##Info
 PyPomoProjectManager (3pm) is a basic project manager:
 * project-based todo-lists
 * pomodoro timer
 
-###Todo
+##Todo
 * evidence-based project scheduler
 
 The idea is to combine todo-items into projects and perform [Pomodoro timer sessions](http://cirillocompany.de/pages/pomodoro-technique) for these todo-items.
