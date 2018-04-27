@@ -77,10 +77,32 @@
                 width: self.height
                 on_release: app.del_project(root.project_index)
 
-
         MutableRstDocumentTextInput:
             text: root.project_content
             on_text: root.project_content = self.text
+
+        GridLayout:
+            height: '48dp'
+            rows: 2
+            padding: 10
+            spacing: 10
+            Label:
+                font_size: 50
+                text: 'root.timeString'
+                text_size: self.size
+                halign: 'center'
+                valign: 'middle'
+            GridLayout:
+                size: root.size
+                rows: 1
+                padding: 10
+                spacing: 10
+                Button:
+                    text: 'Start Session'
+#                    on_press: root.start()
+                Button:
+                    text: 'Reset Session'
+#                    on_press: root.stop()
 
 <ProjectListItem>:
 
