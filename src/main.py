@@ -82,11 +82,42 @@ class Projects(Screen):
             'project_title': item['title']}
 
 
+class Timer(Screen):
+    minutes = NumericProperty(25)
+    seconds = NumericProperty()
+    timeString = StringProperty()
+
+    def __init__(self, **kwargs):
+        super(Timer, self).__init__(**kwargs)
+        # Clock.schedule_interval(self.decrement_time, 1)
+        # self.decrement_time(0)
+        self.timeString = str(self.minutes) + ':' + str(self.seconds)
+
+    def decrement_time(self, interval):
+        self.seconds -= 1
+        if self.seconds < 0:
+            self.minutes -= 1
+            self.seconds = 59
+        self.timeString = str(self.minutes) + ':' + str(self.seconds)
+
+    def start(self):
+        Clock.unschedule(self.decrement_time)
+        Clock.schedule_interval(self.decrement_time, 1)
+
+    def stop(self):
+        self.minutes = 25
+        self.seconds = 0
+        self.timeString = str(self.minutes) + ':' + str(self.seconds)
+        Clock.unschedule(self.decrement_time)
+
+
 class ProjectApp(App):
 
     def build(self):
         self.projects = Projects(name='projects')
         self.load_projects()
+
+        self.timer = Timer()
 
         self.transition = SlideTransition(duration=.35)
         root = ScreenManager(transition=self.transition)
@@ -128,7 +159,7 @@ class ProjectApp(App):
         self.root.current = view.name
 
     def add_project(self):
-        self.projects.data.append({'title': 'New Project', 'content': ''})
+        self.projects.data.append({'title': 'New Project', 'content': '', 'logged': '', 'estimated': ''})
         project_index = len(self.projects.data) - 1
         self.edit_project(project_index)
 
