@@ -1,19 +1,19 @@
 # PyPomoProjectManager (3pm)
 -----------------------------
 
-##Info
+### Info
 PyPomoProjectManager (3pm) is a basic project manager:
 * project-based todo-lists
 * pomodoro timer
 
-##Todo
+### Todo
 * evidence-based project scheduler
 
 The idea is to combine todo-items into projects and perform [Pomodoro timer sessions](http://cirillocompany.de/pages/pomodoro-technique) for these todo-items.
 The estimated time versus actual completion time are used to obtain a velocity rating.
 The completion of projects can then be visualized using the idea of [Evidence-based scheduling](https://www.joelonsoftware.com/2007/10/26/evidence-based-scheduling/) (Cumulative Distribution Function of completion date, obtained using Monte-Carlo Simulation).
 
-##Install
+## Install
 ### Windows
 On Windows, you can use the provided installer, see the Github releases page.
 
@@ -40,5 +40,5 @@ git clone https://github.com/ChrisPara/3pm
 python 3pm/src/main.py
 ```
 
-### OSX
-Supported, but you have to install Python and kivy.
+### OSX and IOS
+Supported but not tested.
