@@ -72,9 +72,9 @@
                 on_text: root.project_title = self.text
 
             Button:
-                text: 'X'
+                text: 'Delete Project'
                 size_hint_x: None
-                width: self.height
+                width: 3*self.height
                 on_release: app.del_project(root.project_index)
 
         MutableRstDocumentTextInput:
@@ -101,7 +101,7 @@
                     text: 'Start Session'
                     on_press: app.timer.start()
                 Button:
-                    text: 'Reset Session'
+                    text: 'Stop Session'
                     on_press: app.timer.stop()
 
 <ProjectListItem>:
@@ -160,9 +160,9 @@
                 font_size: '16sp'
 
             Button:
-                text: '+'
+                text: 'New...'
                 size_hint_x: None
-                width: self.height
+                width: 1.5*self.height
                 on_release: app.add_project()
 
         ListView:
