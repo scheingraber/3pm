@@ -124,10 +124,10 @@
                 spacing: 10
                 Button:
                     text: 'Start Session'
-                    on_press: app.timer.start()
+                    on_press: app.start_work(root.project_index)
                 Button:
                     text: 'Stop Session'
-                    on_press: app.timer.stop()
+                    on_press: app.stop_work(root.project_index)
 
 <ProjectListItem>:
 

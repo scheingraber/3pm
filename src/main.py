@@ -114,17 +114,15 @@ class Timer(Screen):
         self.update_time_string()
 
     def start(self):
+        # reset timer
+        self.minutes = 25
+        self.seconds = 0
+        self.update_time_string()
         # start decrementing time
         Clock.unschedule(self.decrement_time)
         Clock.schedule_interval(self.decrement_time, 1)
 
     def stop(self):
-        # log partial session (if we were in countdown mode)
-        # todo
-        # reset timer
-        self.minutes = 25
-        self.seconds = 0
-        self.update_time_string()
         # stop in- or decrementing time
         Clock.unschedule(self.increment_time)
         Clock.unschedule(self.decrement_time)
@@ -139,7 +137,7 @@ class Timer(Screen):
         self.seconds = 0
         self.update_time_string()
         # start incrementing time
-        Clock.schedule_interval(self.increment_time, 1)
+        # Clock.schedule_interval(self.increment_time, 1)
         # play alarm sound
         # todo
 
@@ -227,9 +225,6 @@ class ProjectApp(App):
         self.save_projects()
         self.refresh_projects()
 
-    def log_project_work(self, project_index, units):
-        self.projects.data[project_index]['logged'] += float(units)
-
     def refresh_projects(self):
         data = self.projects.data
         self.projects.data = []
@@ -238,6 +233,16 @@ class ProjectApp(App):
     def go_projects(self):
         self.transition.direction = 'right'
         self.root.current = 'projects'
+
+    def start_work(self, project_index):
+        # start timer
+        self.timer.start()
+
+    def stop_work(self, project_index):
+        # stop timer
+        self.timer.stop()
+        # log work
+        self.projects.data[project_index]['logged'] += float((self.timer.minutes + self.timer.seconds/60.) / 25.)
 
     @property
     def projects_fn(self):
