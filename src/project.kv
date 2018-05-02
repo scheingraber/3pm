@@ -40,6 +40,8 @@
 
     on_project_content: app.set_project_content(self.project_index, self.project_content)
     on_project_title: app.set_project_title(self.project_index, self.project_title)
+    on_project_logged: app.set_project_logged(self.project_index, self.project_logged)
+    on_project_estimated: app.set_project_estimated(self.project_index, self.project_estimated)
 
     BoxLayout:
 
@@ -91,18 +93,32 @@
                 rows: 1
                 padding: 10
                 spacing: 10
+
                 Label:
-                    font_size: 50
+                    font_size: '32sp'
                     text: app.timer.timeString
                     text_size: self.size
                     halign: 'center'
                     valign: 'middle'
-                Label:
-                    font_size: 30
-                    text: str("%i / %i" % (root.project_logged, root.project_estimated))
-                    text_size: self.size
+
+                MutableLabelTextInput:
+                    font_size: '16sp'
+                    multiline: False
+                    on_text: root.project_logged = self.text
+                    text: str("%.1f" % root.project_logged)
+#                    text_size: self.size
                     halign: 'center'
                     valign: 'middle'
+
+                MutableLabelTextInput:
+                    font_size: '16sp'
+                    multiline: False
+                    on_text: root.project_estimated = self.text
+                    text: str("%.1f" % root.project_estimated)
+#                    text_size: self.size
+                    halign: 'center'
+                    valign: 'middle'
+
             GridLayout:
                 size: root.size
                 rows: 1

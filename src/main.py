@@ -215,6 +215,16 @@ class ProjectApp(App):
         self.save_projects()
         self.refresh_projects()
 
+    def set_project_logged(self, project_index, logged):
+        self.projects.data[project_index]['logged'] = logged
+        self.save_projects()
+        self.refresh_projects()
+
+    def set_project_estimated(self, project_index, estimated):
+        self.projects.data[project_index]['estimated'] = estimated
+        self.save_projects()
+        self.refresh_projects()
+
     def refresh_projects(self):
         data = self.projects.data
         self.projects.data = []
