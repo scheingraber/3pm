@@ -244,10 +244,11 @@ class ProjectApp(App):
         # log work
         self.log_work(project_index)
         self.refresh_projects()
+        self.save_projects()
 
     def log_work(self, project_index):
-        # get logged fractional unit
-        logged_units = (25. - self.timer.minutes) / 25. + (60. - self.timer.seconds) / 60.
+        # get logged fractional unit: (full session time - remaining time) /  full session time
+        logged_units = (25*60. - (self.timer.minutes * 60. + self.timer.seconds)) / (25*60.)
         self.projects.data[project_index]['logged'] += logged_units
 
     @property
