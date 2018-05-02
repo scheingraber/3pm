@@ -151,11 +151,13 @@ class Timer(Screen):
 class ProjectApp(App):
 
     def build(self):
+        # initialize projects
         self.projects = Projects(name='projects')
         self.load_projects()
-
+        # initialize timer
         self.timer = Timer()
 
+        # screen management and transition
         self.transition = SlideTransition(duration=.35)
         root = ScreenManager(transition=self.transition)
         root.add_widget(self.projects)
@@ -224,6 +226,9 @@ class ProjectApp(App):
         self.projects.data[project_index]['estimated'] = float(estimated)
         self.save_projects()
         self.refresh_projects()
+
+    def log_project_work(self, project_index, units):
+        self.projects.data[project_index]['logged'] += float(units)
 
     def refresh_projects(self):
         data = self.projects.data

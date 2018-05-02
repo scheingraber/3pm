@@ -106,7 +106,6 @@
                     multiline: False
                     on_text: root.project_logged = self.text
                     text: str("%.1f" % root.project_logged)
-#                    text_size: self.size
                     halign: 'center'
                     valign: 'middle'
 
@@ -114,8 +113,7 @@
                     font_size: '16sp'
                     multiline: False
                     on_text: root.project_estimated = self.text
-                    text: str("%.1f" % root.project_estimated)
-#                    text_size: self.size
+                    text: str("%i" % root.project_estimated)
                     halign: 'center'
                     valign: 'middle'
 
@@ -151,7 +149,7 @@
             text: root.project_title
 
         Label:
-            text: str("(%.1f/%.1f)" % (root.project_logged, root.project_estimated))
+            text: str("(%.1f/%i)" % (root.project_logged, root.project_estimated))
 
         Button:
             text: '>'
