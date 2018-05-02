@@ -89,7 +89,7 @@ class Timer(Screen):
 
     def __init__(self, **kwargs):
         super(Timer, self).__init__(**kwargs)
-        self.timeString = str(self.minutes) + ':' + str(self.seconds)
+        self.update_time_string()
 
     def decrement_time(self, interval):
         self.seconds -= 1
@@ -98,14 +98,14 @@ class Timer(Screen):
             self.seconds = 59
         if self.minutes < 0:
             self.alarm()
-        self.timeString = str(self.minutes) + ':' + str(self.seconds)
+        self.update_time_string()
 
     def increment_time(self, interval):
         self.seconds += 1
         if self.seconds > 60:
             self.minutes += 1
             self.seconds = 0
-        self.timeString = str(self.minutes) + ':' + str(self.seconds)
+        self.update_time_string()
 
     def start(self):
         # start decrementing time
@@ -118,7 +118,7 @@ class Timer(Screen):
         # reset timer
         self.minutes = 25
         self.seconds = 0
-        self.timeString = str(self.minutes) + ':' + str(self.seconds)
+        self.update_time_string()
         # stop in- or decrementing time
         Clock.unschedule(self.increment_time)
         Clock.unschedule(self.decrement_time)
@@ -131,10 +131,15 @@ class Timer(Screen):
         # reset timer
         self.minutes = 0
         self.seconds = 0
+        self.update_time_string()
         # start incrementing time
         Clock.schedule_interval(self.increment_time, 1)
         # play alarm sound
         # todo
+
+    def update_time_string(self):
+        # update string for clock
+        self.timeString = str("%i:%02i" % (self.minutes, self.seconds))
 
 
 class ProjectApp(App):
