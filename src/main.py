@@ -84,8 +84,8 @@ class Projects(Screen):
             'project_index': row_index,
             'project_content': item['content'],
             'project_title': item['title'],
-            'project_work_logged': item['logged'],
-            'project_work_estimated': item['estimated']}
+            'project_logged': item['logged'],
+            'project_estimated': item['estimated']}
 
 
 class Timer(Screen):
@@ -198,7 +198,7 @@ class ProjectApp(App):
         self.root.current = view.name
 
     def add_project(self):
-        self.projects.data.append({'title': 'NewProject', 'content': '', 'logged': '0', 'estimated': '1'})
+        self.projects.data.append({'title': 'NewProject', 'content': '', 'logged': 0, 'estimated': 1})
         project_index = len(self.projects.data) - 1
         self.edit_project(project_index)
 
@@ -216,12 +216,12 @@ class ProjectApp(App):
         self.refresh_projects()
 
     def set_project_logged(self, project_index, logged):
-        self.projects.data[project_index]['logged'] = logged
+        self.projects.data[project_index]['logged'] = float(logged)
         self.save_projects()
         self.refresh_projects()
 
     def set_project_estimated(self, project_index, estimated):
-        self.projects.data[project_index]['estimated'] = estimated
+        self.projects.data[project_index]['estimated'] = float(estimated)
         self.save_projects()
         self.refresh_projects()
 

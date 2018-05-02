@@ -151,10 +151,7 @@
             text: root.project_title
 
         Label:
-            text: str(root.project_logged)
-
-        Label:
-            text: str(root.project_estimated)
+            text: str("(%.1f/%.1f)" % (root.project_logged, root.project_estimated))
 
         Button:
             text: '>'
