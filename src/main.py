@@ -69,6 +69,8 @@ class ProjectListItem(BoxLayout):
     project_content = StringProperty()
     project_title = StringProperty()
     project_index = NumericProperty()
+    project_logged = NumericProperty()
+    project_estimated = NumericProperty()
 
 
 class Projects(Screen):
@@ -79,12 +81,14 @@ class Projects(Screen):
         return {
             'project_index': row_index,
             'project_content': item['content'],
-            'project_title': item['title']}
+            'project_title': item['title'],
+            'project_work_logged': item['logged'],
+            'project_work_estimated': item['estimated']}
 
 
 class Timer(Screen):
     minutes = NumericProperty(25)
-    seconds = NumericProperty()
+    seconds = NumericProperty(0)
     timeString = StringProperty()
 
     def __init__(self, **kwargs):
@@ -183,14 +187,16 @@ class ProjectApp(App):
             name=name,
             project_index=project_index,
             project_title=project.get('title'),
-            project_content=project.get('content'))
+            project_content=project.get('content'),
+            project_estimated=project.get('estimated'),
+            project_logged=project.get('logged'))
 
         self.root.add_widget(view)
         self.transition.direction = 'left'
         self.root.current = view.name
 
     def add_project(self):
-        self.projects.data.append({'title': 'New Project', 'content': '', 'logged': '', 'estimated': ''})
+        self.projects.data.append({'title': 'NewProject', 'content': '', 'logged': '0', 'estimated': '1'})
         project_index = len(self.projects.data) - 1
         self.edit_project(project_index)
 
