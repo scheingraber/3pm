@@ -86,12 +86,23 @@
             rows: 2
             padding: 10
             spacing: 10
-            Label:
-                font_size: 50
-                text: app.timer.timeString
-                text_size: self.size
-                halign: 'center'
-                valign: 'middle'
+            GridLayout:
+                size: root.size
+                rows: 1
+                padding: 10
+                spacing: 10
+                Label:
+                    font_size: 50
+                    text: app.timer.timeString
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'middle'
+                Label:
+                    font_size: 30
+                    text: str("%i / %i" % (root.project_logged, root.project_estimated))
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'middle'
             GridLayout:
                 size: root.size
                 rows: 1

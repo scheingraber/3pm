@@ -58,6 +58,8 @@ class ProjectView(Screen):
     project_index = NumericProperty()
     project_title = StringProperty()
     project_content = StringProperty()
+    project_logged = NumericProperty()
+    project_estimated = NumericProperty()
 
 
 class ProjectListItem(BoxLayout):
