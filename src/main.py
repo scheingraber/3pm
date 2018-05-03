@@ -114,24 +114,22 @@ class Timer(Screen):
         self.update_time_string()
 
     def start(self):
-        # reset timer
-        self.minutes = 25
-        self.seconds = 0
-        self.update_time_string()
         # start decrementing time
         Clock.unschedule(self.decrement_time)
         Clock.schedule_interval(self.decrement_time, 1)
 
     def stop(self):
         # stop in- or decrementing time
-        Clock.unschedule(self.increment_time)
+        # Clock.unschedule(self.increment_time)
         Clock.unschedule(self.decrement_time)
+        # reset timer
+        self.minutes = 25
+        self.seconds = 0
+        self.update_time_string()
 
     def alarm(self):
         # stop decrementing time
         Clock.unschedule(self.decrement_time)
-        # log work to task
-        # todo
         # reset timer
         self.minutes = 0
         self.seconds = 0
@@ -230,7 +228,8 @@ class ProjectApp(App):
         self.projects.data = []
         self.projects.data = data
 
-    def go_projects(self):
+    def go_projects(self, project_index):
+        self.stop_work(project_index)
         self.transition.direction = 'right'
         self.root.current = 'projects'
 
@@ -239,10 +238,11 @@ class ProjectApp(App):
         self.timer.start()
 
     def stop_work(self, project_index):
-        # stop timer
-        self.timer.stop()
         # log work
         self.log_work(project_index)
+        # stop timer
+        self.timer.stop()
+        # save log
         self.refresh_projects()
         self.save_projects()
 
