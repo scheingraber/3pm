@@ -13,8 +13,9 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.clock import Clock
 from kivy.uix.label import Label
+from kivy.core.audio import SoundLoader
 
-__version__ = '0.1.1'
+__version__ = '0.3.0'
 
 
 class MutableTextInput(FloatLayout):
@@ -92,6 +93,8 @@ class Timer(Screen):
     minutes = NumericProperty(25)
     seconds = NumericProperty(0)
     timeString = StringProperty()
+    alarmSound = SoundLoader.load('data/gong.wav')
+    startSound = SoundLoader.load('data/ticktock.wav')
 
     def __init__(self, **kwargs):
         super(Timer, self).__init__(**kwargs)
@@ -117,6 +120,9 @@ class Timer(Screen):
         # start decrementing time
         Clock.unschedule(self.decrement_time)
         Clock.schedule_interval(self.decrement_time, 1)
+        # play start sound if file found
+        if self.startSound:
+            self.startSound.play()
 
     def stop(self):
         # stop in- or decrementing time
@@ -136,8 +142,9 @@ class Timer(Screen):
         self.update_time_string()
         # start incrementing time
         # Clock.schedule_interval(self.increment_time, 1)
-        # play alarm sound
-        # todo
+        # play alarm sound if file found
+        if self.stopSound:
+            self.stopSound.play()
 
     def update_time_string(self):
         # update string for clock
