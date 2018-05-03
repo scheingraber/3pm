@@ -143,8 +143,8 @@ class Timer(Screen):
         # start incrementing time
         # Clock.schedule_interval(self.increment_time, 1)
         # play alarm sound if file found
-        if self.stopSound:
-            self.stopSound.play()
+        if self.alarmSound:
+            self.alarmSound.play()
 
     def update_time_string(self):
         # update string for clock
