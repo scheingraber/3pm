@@ -178,10 +178,10 @@ class ProjectApp(App):
             json.dump(self.projects.data, fd)
 
     def del_project(self, project_index):
+        self.go_projects(project_index)
         del self.projects.data[project_index]
         self.save_projects()
         self.refresh_projects()
-        self.go_projects()
 
     def edit_project(self, project_index):
         project = self.projects.data[project_index]
