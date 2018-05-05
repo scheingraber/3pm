@@ -13,10 +13,13 @@ package.domain = org.test
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts =
+source.include_exts = png,wav
 
 # (list) Source files to exclude (let empty to not excluding anything)
 source.exclude_exts = spec
+
+# dirs to exclude
+source.exclude_dirs = bin
 
 # (str) Application versioning (method 1)
 version.regex = __version__ = '(.*)'
@@ -32,7 +35,7 @@ requirements = kivy,docutils
 presplash.filename = %(source.dir)s/data/icon.png
 
 # (str) Icon of the application
-#icon.filename = %(source.dir)s/data/icon.png
+icon.filename = %(source.dir)s/data/icon.png
 
 # (str) Supported orientation (one of landscape, portrait or all)
 orientation = all
