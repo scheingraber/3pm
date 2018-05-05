@@ -15,7 +15,7 @@ from kivy.clock import Clock
 from kivy.uix.label import Label
 from kivy.core.audio import SoundLoader
 
-__version__ = '0.3.0'
+__version__ = '0.3.2'
 
 
 class MutableTextInput(FloatLayout):
