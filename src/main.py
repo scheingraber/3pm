@@ -242,7 +242,10 @@ class ProjectApp(App):
         self.projects.data = data
 
     def go_projects(self, project_index):
-        self.stop_work(project_index)
+        # stop timer if running
+        if self.timer.running:
+            self.stop_work(project_index)
+        # go to project view
         self.transition.direction = 'right'
         self.root.current = 'projects'
 
