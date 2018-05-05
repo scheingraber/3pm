@@ -3,3 +3,5 @@ pkg
 .idea
 build
 dist
+src/bin
+src/.buildozer
