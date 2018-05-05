@@ -1,10 +1,10 @@
 [app]
 
 # (str) Title of your application
-title = PyPomoProjectManager
+title = 3PM
 
 # (str) Package name
-package.name = PPPM
+package.name = PyPomoProjectManager
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = org.test
@@ -13,10 +13,10 @@ package.domain = org.test
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas
+source.include_exts =
 
 # (list) Source files to exclude (let empty to not excluding anything)
-#source.exclude_exts = spec
+source.exclude_exts = spec
 
 # (str) Application versioning (method 1)
 version.regex = __version__ = '(.*)'
