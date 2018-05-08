@@ -152,6 +152,12 @@
             text: str("(%.1f/%i)" % (root.project_logged, root.project_estimated))
 
         Button:
+            text: 'Start'
+            size_hint_x: None
+            width: 1.2*self.height
+            on_release: app.edit_project(root.project_index); app.start_work(root.project_index)
+
+        Button:
             text: '>'
             size_hint_x: None
             width: self.height

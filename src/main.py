@@ -1,7 +1,7 @@
 """
 3PM
 =====
-Python Pomodoro Project Manager - P.P.P.M.- 3PM - so you too can leave the office every day by 3pm!
+Python Pomodoro Project Manager - PPPM - 3PM - so you too can leave the office every day by 3pm!
 """
 import json
 from os.path import join, exists
@@ -12,10 +12,9 @@ from kivy.properties import ListProperty, StringProperty, \
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.clock import Clock
-from kivy.uix.label import Label
 from kivy.core.audio import SoundLoader
 
-__version__ = '0.3.0'
+__version__ = '0.3.2'
 
 
 class MutableTextInput(FloatLayout):
@@ -99,6 +98,7 @@ class Timer(Screen):
     def __init__(self, **kwargs):
         super(Timer, self).__init__(**kwargs)
         self.update_time_string()
+        self.running = False
 
     def decrement_time(self, interval):
         self.seconds -= 1
@@ -117,21 +117,27 @@ class Timer(Screen):
         self.update_time_string()
 
     def start(self):
-        # start decrementing time
-        Clock.unschedule(self.decrement_time)
-        Clock.schedule_interval(self.decrement_time, 1)
-        # play start sound if file found
-        if self.startSound:
-            self.startSound.play()
+        if not self.running:
+            # start decrementing time
+            Clock.unschedule(self.decrement_time)
+            Clock.schedule_interval(self.decrement_time, 1)
+            # store flag that timer is running
+            self.running = True
+            # play start sound if file found
+            if self.startSound:
+                self.startSound.play()
 
     def stop(self):
-        # stop in- or decrementing time
-        # Clock.unschedule(self.increment_time)
-        Clock.unschedule(self.decrement_time)
-        # reset timer
-        self.minutes = 25
-        self.seconds = 0
-        self.update_time_string()
+        if self.running:
+            # stop in- or decrementing time
+            # Clock.unschedule(self.increment_time)
+            Clock.unschedule(self.decrement_time)
+            # store flag that timer is not running
+            self.running = False
+            # reset timer
+            self.minutes = 25
+            self.seconds = 0
+            self.update_time_string()
 
     def alarm(self):
         # stop decrementing time
@@ -178,10 +184,10 @@ class ProjectApp(App):
             json.dump(self.projects.data, fd)
 
     def del_project(self, project_index):
+        self.go_projects(project_index)
         del self.projects.data[project_index]
         self.save_projects()
         self.refresh_projects()
-        self.go_projects()
 
     def edit_project(self, project_index):
         project = self.projects.data[project_index]
@@ -236,7 +242,10 @@ class ProjectApp(App):
         self.projects.data = data
 
     def go_projects(self, project_index):
-        self.stop_work(project_index)
+        # stop timer if running
+        if self.timer.running:
+            self.stop_work(project_index)
+        # go to project view
         self.transition.direction = 'right'
         self.root.current = 'projects'
 
