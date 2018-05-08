@@ -13,8 +13,9 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
+from plyer import notification
 
-__version__ = '0.3.2'
+__version__ = '0.3.3'
 
 
 class MutableTextInput(FloatLayout):
@@ -146,8 +147,9 @@ class Timer(Screen):
         self.minutes = 0
         self.seconds = 0
         self.update_time_string()
-        # start incrementing time
-        # Clock.schedule_interval(self.increment_time, 1)
+        # show notification
+        notification.notify(title="3PM", message="Session finished!",
+                            app_name="3PM", timeout=15)
         # play alarm sound if file found
         if self.alarmSound:
             self.alarmSound.play()
