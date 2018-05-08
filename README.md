@@ -21,7 +21,8 @@ You can use the provided self-extracting archive from [Github releases](https://
 Use the provided apk from [Github releases](https://github.com/ChrisPara/3pm/releases).
 
 ### Linux
-Install dependencies:
+Dependencies:
+
 * python=2.7
 * docutils
 * pygments
@@ -40,5 +41,5 @@ git clone https://github.com/ChrisPara/3pm
 python 3pm/src/main.py
 ```
 
-### OSX and IOS
-Not tested, but should work just fine.
+### macOS and iOS
+Should work just fine on macOS using the steps for Linux, but this has not been tested. An iOS package will be provided in the near future.
