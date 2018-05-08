@@ -6,6 +6,9 @@ PyPomoProjectManager (3pm) is a basic project manager:
 * project-based todo-lists
 * pomodoro timer
 
+![](src/data/demo.gif)
+
+
 ### Todo
 * evidence-based project scheduler
 
