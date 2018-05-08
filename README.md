@@ -15,30 +15,30 @@ The completion of projects can then be visualized using the idea of [Evidence-ba
 
 ## Install
 ### Windows
-On Windows, you can use the provided installer, see the Github releases page.
+You can use the provided self-extracting archive from [Github releases](https://github.com/ChrisPara/3pm/releases).
 
 ### Android
-Copy src dir to sdcard/kivy and use the Kivy-Lancher app. An apkg will be provided in the near future.
+Use the provided apk from [Github releases](https://github.com/ChrisPara/3pm/releases).
 
 ### Linux
-Python 2.7 or 3.5 are supported. You need the following PIP packages:
+Install dependencies:
+* python=2.7
 * docutils
 * pygments
-* pypiwin32
-* kivy.deps.sdl2
-* kivy.deps.glew
 * kivy
+* plyer<1.3.0
 
-E.g., using Anaconda and pip:
+Install 3PM using virtualenv and pip:
 ```bash
-conda create -n 3pm python=2.7
-source activate 3pm
-python -m pip install --upgrade pip wheel setuptools
-python -m pip install docutils pygments pypiwin32 kivy.deps.sdl2 kivy.deps.glew
-python -m pip install kivy
+virtualenv 3pm_env
+source 3pm_env/bin/activate
+pip install --upgrade pip wheel setuptools
+pip install docutils pygments
+pip install kivy
+pip install 'plyer<1.3.0'
 git clone https://github.com/ChrisPara/3pm
 python 3pm/src/main.py
 ```
 
 ### OSX and IOS
-Supported but not tested.
+Not tested, but should work just fine.
