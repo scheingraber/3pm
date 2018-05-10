@@ -13,13 +13,12 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
-from plyer import notification
+import notification
 
 __version__ = '0.3.3'
 
 
 class MutableTextInput(FloatLayout):
-
     text = StringProperty()
     multiline = BooleanProperty(True)
 
@@ -55,7 +54,6 @@ class MutableTextInput(FloatLayout):
 
 
 class ProjectView(Screen):
-
     project_index = NumericProperty()
     project_title = StringProperty()
     project_content = StringProperty()
@@ -127,6 +125,9 @@ class Timer(Screen):
             # play start sound if file found
             if self.startSound:
                 self.startSound.play()
+        n = notification.Notification()
+        n.notify(title="3PM", message="Session started!",
+                 app_name="3PM", timeout=15)
 
     def stop(self):
         if self.running:
