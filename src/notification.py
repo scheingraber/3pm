@@ -10,7 +10,7 @@ import platform
 
 
 class WindowsBalloonTip:
-    def __init__(self, title, msg):
+    def __init__(self, title, msg, timeout):
         message_map = {
             win32con.WM_DESTROY: self.OnDestroy,
         }
@@ -40,7 +40,7 @@ class WindowsBalloonTip:
                          (self.hwnd, 0, NIF_INFO, win32con.WM_USER+20, \
                           hicon, "Balloon  tooltip",msg,200,title))
         # self.show_balloon(title, msg)
-        time.sleep(10)
+        time.sleep(timeout)
         DestroyWindow(self.hwnd)
 
     def OnDestroy(self, hwnd, msg, wparam, lparam):
@@ -49,8 +49,8 @@ class WindowsBalloonTip:
         PostQuitMessage(0) # Terminate the app.
 
 
-def balloon_tip(title, msg):
-    w=WindowsBalloonTip(title, msg)
+def balloon_tip(title, message, timeout=15):
+    w = WindowsBalloonTip(title, message, timeout)
 
 
 class Notification(object):
@@ -84,12 +84,11 @@ class Notification(object):
         if platform.system() == 'Windows':
             # custom notification on windows since plyer does not work with PyInstaller
             # XXX use thread
-            balloon_tip(title=kwargs['title'], msg=kwargs['message'])
+            thread(balloon_tip(title=kwargs['title'], message=kwargs['message'],
+                               timeout=kwargs['timeout'])
 
         else:
             # plyer for everything else
-            n = pn()
-            # n.notify(title="3PM", message="Session started!",
-            #          app_name="3PM", timeout=15)
-            n.notify(kwargs)
+            pn.notify(title=kwargs['title'], message=kwargs['message'],
+                      timeout=kwargs['timeout'])
 

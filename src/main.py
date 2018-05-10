@@ -126,8 +126,7 @@ class Timer(Screen):
             if self.startSound:
                 self.startSound.play()
         n = notification.Notification()
-        n.notify(title="3PM", message="Session started!",
-                 app_name="3PM", timeout=15)
+        n.notify(title="3PM", message="Session started!", timeout=20)
 
     def stop(self):
         if self.running:
