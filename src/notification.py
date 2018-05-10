@@ -83,9 +83,8 @@ class Notification(object):
         # detect system
         if platform.system() == 'Windows':
             # custom notification on windows since plyer does not work with PyInstaller
-            # XXX use thread
-            thread(balloon_tip(title=kwargs['title'], message=kwargs['message'],
-                               timeout=kwargs['timeout'])
+            thread(target=balloon_tip,
+                   args=(kwargs['title'], kwargs['message'], kwargs['timeout'])).start()
 
         else:
             # plyer for everything else

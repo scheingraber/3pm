@@ -125,8 +125,6 @@ class Timer(Screen):
             # play start sound if file found
             if self.startSound:
                 self.startSound.play()
-        n = notification.Notification()
-        n.notify(title="3PM", message="Session started!", timeout=20)
 
     def stop(self):
         if self.running:
@@ -148,8 +146,7 @@ class Timer(Screen):
         self.seconds = 0
         self.update_time_string()
         # show notification
-        notification.notify(title="3PM", message="Session finished!",
-                            app_name="3PM", timeout=15)
+        notification.Notification().notify(title="3PM", message="Session finished!", timeout=20)
         # play alarm sound if file found
         if self.alarmSound:
             self.alarmSound.play()
