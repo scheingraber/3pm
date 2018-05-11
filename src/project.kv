@@ -189,6 +189,12 @@
                 size_hint_x: None
                 width: self.height
 
+            Button:
+                text: 'Settings'
+                size_hint_x: None
+                width: 1.8*self.height
+                on_release: app.open_settings()
+
             Label:
                 text: 'Projects'
                 font_size: '16sp'

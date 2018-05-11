@@ -14,6 +14,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
 import notification
+from kivy.uix.settings import SettingsWithNoMenu
 
 __version__ = '0.3.3'
 
@@ -159,6 +160,7 @@ class Timer(Screen):
 class ProjectApp(App):
 
     def build(self):
+        self.settings_cls = SettingsWithNoMenu
         # load settings
         self.load_settings()
         # initialize projects
@@ -184,6 +186,24 @@ class ProjectApp(App):
     def save_settings(self):
         with open(self.settings_fn, 'w') as fd:
             json.dump(self.settings, fd)
+
+    def edit_settings(self):
+        name = 'settings_edit'
+
+        if self.root.has_screen(name):
+            self.root.remove_widget(self.root.get_screen(name))
+
+        view = SettingsView(
+            name=name,
+            project_index=project_index,
+            project_title=project.get('title'),
+            project_content=project.get('content'),
+            project_estimated=project.get('estimated'),
+            project_logged=project.get('logged'))
+
+        self.root.add_widget(view)
+        self.transition.direction = 'right'
+        self.root.current = view.name
 
     def load_projects(self):
         if not exists(self.projects_fn):
