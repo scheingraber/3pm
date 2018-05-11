@@ -159,6 +159,8 @@ class Timer(Screen):
 class ProjectApp(App):
 
     def build(self):
+        # load settings
+        self.load_settings()
         # initialize projects
         self.projects = Projects(name='projects')
         self.load_projects()
@@ -170,6 +172,18 @@ class ProjectApp(App):
         root = ScreenManager(transition=self.transition)
         root.add_widget(self.projects)
         return root
+
+    def load_settings(self):
+        # load settings
+        if not exists(self.settings_fn):
+            return
+        with open(self.settings_fn) as fd:
+            settings = json.load(fd)
+        self.settings = settings
+
+    def save_settings(self):
+        with open(self.settings_fn, 'w') as fd:
+            json.dump(self.settings, fd)
 
     def load_projects(self):
         if not exists(self.projects_fn):
@@ -271,6 +285,10 @@ class ProjectApp(App):
     @property
     def projects_fn(self):
         return join(self.user_data_dir, 'projects.json')
+
+    @property
+    def settings_fn(self):
+        return join(self.user_data_dir, 'settings.json')
 
 
 if __name__ == '__main__':
