@@ -14,9 +14,10 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
 import notification
-from default_settings import settings_json
+from kivy.uix.settings import SettingsWithTabbedPanel
+from default_settings import session_settings_json, ebs_settings_json
 
-__version__ = '0.3.3'
+__version__ = '0.4.0'
 
 
 class MutableTextInput(FloatLayout):
@@ -160,9 +161,9 @@ class Timer(Screen):
 class ProjectApp(App):
 
     def build(self):
-        # self.settings_cls = SettingsWithNoMenu
         self.use_kivy_settings = False
-        setting = self.config.get('example', 'boolexample')
+        self.settings_cls = SettingsWithTabbedPanel
+        # setting = self.config.get('sessions', 'duration')
         # initialize projects
         self.projects = Projects(name='projects')
         self.load_projects()
@@ -176,17 +177,22 @@ class ProjectApp(App):
         return root
 
     def build_config(self, config):
-        config.setdefaults('general', {
-            'boolexample': True,
-            'numericexample': 10,
-            'optionsexample': 'option2',
-            'stringexample': 'some_string',
-            'pathexample': '/some/path'})
+        config.setdefaults(
+            'sessions', {'start_sound': True,
+                         'end_sound': True,
+                         'notification': True,
+                         'duration': 25})
+
+        config.setdefaults(
+            'ebs',      {'keep_velocity_ratings': False})
 
     def build_settings(self, settings):
-        settings.add_json_panel('General Settings',
+        settings.add_json_panel('Sessions',
                                 self.config,
-                                data=settings_json)
+                                data=session_settings_json)
+        settings.add_json_panel('EBS',
+                                self.config,
+                                data=ebs_settings_json)
 
     def on_config_change(self, config, section, key, value):
         print config, section, key, value
