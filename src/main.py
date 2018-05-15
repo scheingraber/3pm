@@ -17,7 +17,7 @@ import notification
 from kivy.uix.settings import SettingsWithTabbedPanel
 from default_settings import session_settings_json, ebs_settings_json
 
-__version__ = '0.4.0'
+__version__ = '0.5.0'
 
 
 class MutableTextInput(FloatLayout):
@@ -161,9 +161,11 @@ class Timer(Screen):
 class ProjectApp(App):
 
     def build(self):
+        # initialize settings
         self.use_kivy_settings = False
         self.settings_cls = SettingsWithTabbedPanel
-        # setting = self.config.get('sessions', 'duration')
+        # get some settings
+        self.settings.session_length = self.config.get('sessions', 'duration')
         # initialize projects
         self.projects = Projects(name='projects')
         self.load_projects()

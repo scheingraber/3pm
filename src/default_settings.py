@@ -22,7 +22,7 @@ session_settings_json = json.dumps([
      'section': 'sessions',
      'key': 'notification'},
     {'type': 'title',
-    'title': 'Timer'},
+     'title': 'Timer'},
     {'type': 'numeric',
      'title': 'Session Length',
      'desc': 'Session interval length in minutes',
