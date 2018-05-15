@@ -15,7 +15,7 @@ from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
 import notification
 from kivy.uix.settings import SettingsWithTabbedPanel
-from default_settings import session_settings_json, ebs_settings_json
+from default_settings import timer_settings_json, ebs_settings_json
 
 __version__ = '0.5.0'
 
@@ -103,11 +103,11 @@ class Timer(Screen):
 
     def init(self, config):
         # update sound and notification toggles
-        self.start_sound_activated = bool(config.get('sessions', 'start_sound'))
-        self.end_sound_activated = bool(config.get('sessions', 'end_sound'))
-        self.show_notification = bool(config.get('sessions', 'notification'))
+        self.start_sound_activated = config.get('timer', 'start_sound') == '1'
+        self.end_sound_activated = config.get('timer', 'end_sound') == '1'
+        self.show_notification = config.get('timer', 'notification') == '1'
         # update session length
-        self.session_length = float(config.get('sessions', 'session_length'))
+        self.session_length = float(config.get('timer', 'session_length'))
         # initialize timer
         self.minutes = self.session_length
         self.seconds = 0
@@ -191,17 +191,17 @@ class ProjectApp(App):
 
     def build_config(self, config):
         config.setdefaults(
-            'sessions', {'start_sound': True,
-                         'end_sound': True,
-                         'notification': True,
-                         'session_length': 25})
+            'timer', {'start_sound': True,
+                      'end_sound': True,
+                      'notification': True,
+                      'session_length': 25})
         config.setdefaults(
             'ebs',      {'keep_velocity_ratings': False})
 
     def build_settings(self, settings):
-        settings.add_json_panel('Sessions',
+        settings.add_json_panel('Timer',
                                 self.config,
-                                data=session_settings_json)
+                                data=timer_settings_json)
         settings.add_json_panel('EBS',
                                 self.config,
                                 data=ebs_settings_json)
