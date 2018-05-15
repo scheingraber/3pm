@@ -14,7 +14,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
 import notification
-from kivy.uix.settings import SettingsWithNoMenu
+from default_settings import settings_json
 
 __version__ = '0.3.3'
 
@@ -160,9 +160,9 @@ class Timer(Screen):
 class ProjectApp(App):
 
     def build(self):
-        self.settings_cls = SettingsWithNoMenu
-        # load settings
-        self.load_settings()
+        # self.settings_cls = SettingsWithNoMenu
+        self.use_kivy_settings = False
+        setting = self.config.get('example', 'boolexample')
         # initialize projects
         self.projects = Projects(name='projects')
         self.load_projects()
@@ -175,35 +175,21 @@ class ProjectApp(App):
         root.add_widget(self.projects)
         return root
 
-    def load_settings(self):
-        # load settings
-        if not exists(self.settings_fn):
-            return
-        with open(self.settings_fn) as fd:
-            settings = json.load(fd)
-        self.settings = settings
+    def build_config(self, config):
+        config.setdefaults('general', {
+            'boolexample': True,
+            'numericexample': 10,
+            'optionsexample': 'option2',
+            'stringexample': 'some_string',
+            'pathexample': '/some/path'})
 
-    def save_settings(self):
-        with open(self.settings_fn, 'w') as fd:
-            json.dump(self.settings, fd)
+    def build_settings(self, settings):
+        settings.add_json_panel('General Settings',
+                                self.config,
+                                data=settings_json)
 
-    def edit_settings(self):
-        name = 'settings_edit'
-
-        if self.root.has_screen(name):
-            self.root.remove_widget(self.root.get_screen(name))
-
-        view = SettingsView(
-            name=name,
-            project_index=project_index,
-            project_title=project.get('title'),
-            project_content=project.get('content'),
-            project_estimated=project.get('estimated'),
-            project_logged=project.get('logged'))
-
-        self.root.add_widget(view)
-        self.transition.direction = 'right'
-        self.root.current = view.name
+    def on_config_change(self, config, section, key, value):
+        print config, section, key, value
 
     def load_projects(self):
         if not exists(self.projects_fn):
@@ -305,10 +291,6 @@ class ProjectApp(App):
     @property
     def projects_fn(self):
         return join(self.user_data_dir, 'projects.json')
-
-    @property
-    def settings_fn(self):
-        return join(self.user_data_dir, 'settings.json')
 
 
 if __name__ == '__main__':
