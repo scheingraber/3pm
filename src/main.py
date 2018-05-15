@@ -191,12 +191,12 @@ class ProjectApp(App):
 
     def build_config(self, config):
         config.setdefaults(
-            'timer', {'start_sound': True,
-                      'end_sound': True,
-                      'notification': True,
+            'timer', {'start_sound': 1,
+                      'end_sound': 1,
+                      'notification': 1,
                       'session_length': 25})
         config.setdefaults(
-            'ebs',      {'keep_velocity_ratings': False})
+            'ebs',      {'keep_velocity_ratings': 0})
 
     def build_settings(self, settings):
         settings.add_json_panel('Timer',
