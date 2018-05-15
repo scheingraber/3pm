@@ -90,16 +90,19 @@ class Projects(Screen):
 
 
 class Timer(Screen):
-    minutes = NumericProperty(25)
-    seconds = NumericProperty(0)
     timeString = StringProperty()
-    alarmSound = SoundLoader.load('data/gong.wav')
-    startSound = SoundLoader.load('data/ticktock.wav')
 
     def __init__(self, **kwargs):
+        # store session length
+        self.session_length = kwargs['session_length']
+        # initialize timer
+        self.minutes = self.session_length
+        self.seconds = 0
+        self.alarmSound = SoundLoader.load('data/gong.wav')
+        self.startSound = SoundLoader.load('data/ticktock.wav')
+        self.running = False
         super(Timer, self).__init__(**kwargs)
         self.update_time_string()
-        self.running = False
 
     def decrement_time(self, interval):
         self.seconds -= 1
@@ -135,8 +138,8 @@ class Timer(Screen):
             Clock.unschedule(self.decrement_time)
             # store flag that timer is not running
             self.running = False
-            # reset timer
-            self.minutes = 25
+            # reinitialize timer
+            self.minutes = self.session_length
             self.seconds = 0
             self.update_time_string()
 
@@ -165,12 +168,12 @@ class ProjectApp(App):
         self.use_kivy_settings = False
         self.settings_cls = SettingsWithTabbedPanel
         # get some settings
-        self.settings.session_length = self.config.get('sessions', 'duration')
+        session_length = float(self.config.get('sessions', 'session_length'))
         # initialize projects
         self.projects = Projects(name='projects')
         self.load_projects()
         # initialize timer
-        self.timer = Timer()
+        self.timer = Timer(session_length=session_length)
 
         # screen management and transition
         self.transition = SlideTransition(duration=.35)
@@ -183,7 +186,7 @@ class ProjectApp(App):
             'sessions', {'start_sound': True,
                          'end_sound': True,
                          'notification': True,
-                         'duration': 25})
+                         'session_length': 25})
 
         config.setdefaults(
             'ebs',      {'keep_velocity_ratings': False})

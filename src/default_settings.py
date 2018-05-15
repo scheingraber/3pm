@@ -27,7 +27,7 @@ session_settings_json = json.dumps([
      'title': 'Session Length',
      'desc': 'Session interval length in minutes',
      'section': 'sessions',
-     'key': 'duration'}])
+     'key': 'session_length'}])
 
 ebs_settings_json = json.dumps([
     {'type': 'title',
