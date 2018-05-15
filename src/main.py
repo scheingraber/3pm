@@ -92,16 +92,26 @@ class Projects(Screen):
 class Timer(Screen):
     timeString = StringProperty()
 
-    def __init__(self, **kwargs):
-        # store session length
-        self.session_length = kwargs['session_length']
-        # initialize timer
-        self.minutes = self.session_length
-        self.seconds = 0
+    def __init__(self, config, **kwargs):
+        # init settings and timer
+        self.init(config)
         self.alarmSound = SoundLoader.load('data/gong.wav')
         self.startSound = SoundLoader.load('data/ticktock.wav')
         self.running = False
         super(Timer, self).__init__(**kwargs)
+        self.update_time_string()
+
+    def init(self, config):
+        # update sound and notification toggles
+        self.start_sound_activated = bool(config.get('sessions', 'start_sound'))
+        self.end_sound_activated = bool(config.get('sessions', 'end_sound'))
+        self.show_notification = bool(config.get('sessions', 'notification'))
+        # update session length
+        self.session_length = float(config.get('sessions', 'session_length'))
+        # initialize timer
+        self.minutes = self.session_length
+        self.seconds = 0
+        # update display
         self.update_time_string()
 
     def decrement_time(self, interval):
@@ -128,7 +138,7 @@ class Timer(Screen):
             # store flag that timer is running
             self.running = True
             # play start sound if file found
-            if self.startSound:
+            if self.start_sound_activated and self.startSound:
                 self.startSound.play()
 
     def stop(self):
@@ -151,9 +161,10 @@ class Timer(Screen):
         self.seconds = 0
         self.update_time_string()
         # show notification
-        notification.Notification().notify(title="3PM", message="Session finished!", timeout=20)
+        if self.notification_activated:
+            notification.Notification().notify(title="3PM", message="Session finished!", timeout=20)
         # play alarm sound if file found
-        if self.alarmSound:
+        if self.start_sound_activated and self.alarmSound:
             self.alarmSound.play()
 
     def update_time_string(self):
@@ -167,14 +178,11 @@ class ProjectApp(App):
         # initialize settings
         self.use_kivy_settings = False
         self.settings_cls = SettingsWithTabbedPanel
-        # get some settings
-        session_length = float(self.config.get('sessions', 'session_length'))
         # initialize projects
         self.projects = Projects(name='projects')
         self.load_projects()
         # initialize timer
-        self.timer = Timer(session_length=session_length)
-
+        self.timer = Timer(self.config)
         # screen management and transition
         self.transition = SlideTransition(duration=.35)
         root = ScreenManager(transition=self.transition)
@@ -187,7 +195,6 @@ class ProjectApp(App):
                          'end_sound': True,
                          'notification': True,
                          'session_length': 25})
-
         config.setdefaults(
             'ebs',      {'keep_velocity_ratings': False})
 
@@ -200,7 +207,8 @@ class ProjectApp(App):
                                 data=ebs_settings_json)
 
     def on_config_change(self, config, section, key, value):
-        print config, section, key, value
+        # reinitialize timer
+        self.timer.init(config)
 
     def load_projects(self):
         if not exists(self.projects_fn):
