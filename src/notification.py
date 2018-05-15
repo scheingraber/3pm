@@ -1,12 +1,14 @@
 from plyer import notification as pn
 from threading import Thread as thread
-from win32api import *
-from win32gui import *
-import win32con
 import sys, os
 import struct
 import time
 import platform
+# detect system
+if platform.system() == 'Windows':
+    import win32con
+    from win32api import *
+    from win32gui import *
 
 
 class WindowsBalloonTip:

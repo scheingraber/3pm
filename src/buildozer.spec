@@ -29,7 +29,7 @@ version.filename = %(source.dir)s/main.py
 # version = 1.2.0
 
 # (list) Application requirements
-requirements = kivy,docutils
+requirements = kivy,docutils,plyer
 
 # (str) Presplash of the application
 presplash.filename = %(source.dir)s/data/icon.png

@@ -17,7 +17,7 @@ import notification
 from kivy.uix.settings import SettingsWithTabbedPanel
 from default_settings import timer_settings_json, ebs_settings_json
 
-__version__ = '0.5.0'
+__version__ = '0.5.1'
 
 
 class MutableTextInput(FloatLayout):
@@ -105,7 +105,7 @@ class Timer(Screen):
         # update sound and notification toggles
         self.start_sound_activated = config.get('timer', 'start_sound') == '1'
         self.end_sound_activated = config.get('timer', 'end_sound') == '1'
-        self.show_notification = config.get('timer', 'notification') == '1'
+        self.notification_activated = config.get('timer', 'notification') == '1'
         # update session length
         self.session_length = float(config.get('timer', 'session_length'))
         # initialize timer
