@@ -37,10 +37,8 @@
 
 
 <ProjectView>:
-
     on_project_content: app.set_project_content(self.project_index, self.project_content)
     on_project_title: app.set_project_title(self.project_index, self.project_title)
-    on_project_logged: app.set_project_logged(self.project_index, self.project_logged)
     on_project_estimated: app.set_project_estimated(self.project_index, self.project_estimated)
 
     BoxLayout:
@@ -103,7 +101,7 @@
 
                 Label:
                     font_size: '16sp'
-                    text: str("%.1f" % root.project_logged)
+                    text: app.timer.loggedString
                     halign: 'center'
                     valign: 'middle'
 
@@ -125,7 +123,7 @@
                     on_press: app.start_work(root.project_index)
                 Button:
                     text: 'Stop Session'
-                    on_press: app.go_projects(root.project_index)
+                    on_press: app.stop_work(root.project_index)
 
 <ProjectListItem>:
 

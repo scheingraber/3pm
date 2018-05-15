@@ -91,6 +91,7 @@ class Projects(Screen):
 
 class Timer(Screen):
     timeString = StringProperty()
+    loggedString = StringProperty()
 
     def __init__(self, config, **kwargs):
         # init settings and timer
@@ -159,6 +160,7 @@ class Timer(Screen):
         # reset timer
         self.minutes = 0
         self.seconds = 0
+        # update time string
         self.update_time_string()
         # show notification
         if self.notification_activated:
@@ -170,6 +172,10 @@ class Timer(Screen):
     def update_time_string(self):
         # update string for clock
         self.timeString = str("%i:%02i" % (self.minutes, self.seconds))
+
+    def update_logged_string(self, logged):
+        # update string for logged view
+        self.loggedString = str("%.1f" % logged)
 
 
 class ProjectApp(App):
@@ -245,6 +251,8 @@ class ProjectApp(App):
         self.root.add_widget(view)
         self.transition.direction = 'left'
         self.root.current = view.name
+        # update timer logged view
+        self.timer.update_logged_string(project.get('logged'))
 
     def add_project(self):
         self.projects.data.append({'title': 'NewProject', 'content': '', 'logged': 0, 'estimated': 1})
@@ -264,13 +272,13 @@ class ProjectApp(App):
         self.save_projects()
         self.refresh_projects()
 
-    def set_project_logged(self, project_index, logged):
-        self.projects.data[project_index]['logged'] = float(logged)
+    def set_project_estimated(self, project_index, estimated):
+        self.projects.data[project_index]['estimated'] = float(estimated)
         self.save_projects()
         self.refresh_projects()
 
-    def set_project_estimated(self, project_index, estimated):
-        self.projects.data[project_index]['estimated'] = float(estimated)
+    def set_project_logged(self, project_index, logged):
+        self.projects.data[project_index]['logged'] = float(logged)
         self.save_projects()
         self.refresh_projects()
 
@@ -306,6 +314,8 @@ class ProjectApp(App):
         logged_total = self.projects.data[project_index]['logged'] + logged_new
         # update logged
         self.set_project_logged(project_index, logged_total)
+        # update logged view
+        self.timer.update_logged_string(logged_total)
 
     @property
     def projects_fn(self):
