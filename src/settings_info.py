@@ -41,4 +41,4 @@ ebs_settings_json = json.dumps([
      'title': 'Log Velocity Ratings',
      'desc': 'Keep Velocity Ratings for Evidence-Based Scheduling',
      'section': 'ebs',
-     'key': 'keep_velocity_ratings'}])
+     'key': 'log_velocity_ratings'}])

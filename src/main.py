@@ -17,7 +17,7 @@ import notification
 from kivy.uix.settings import SettingsWithTabbedPanel
 from settings_info import timer_settings_json, ebs_settings_json
 
-__version__ = '0.5.1'
+__version__ = '0.6.0'
 
 
 class MutableTextInput(FloatLayout):
@@ -133,6 +133,7 @@ class Timer(Screen):
 
 class ProjectApp(App):
     def build(self):
+        self.title = 'PyPomoProjectManager - 3PM'
         # initialize settings
         self.use_kivy_settings = False
         self.settings_cls = SettingsWithTabbedPanel
@@ -158,7 +159,7 @@ class ProjectApp(App):
                       'notification_timeout': 10,
                       'session_length': 25})
         config.setdefaults(
-            'ebs',      {'keep_velocity_ratings': 0})
+            'ebs',      {'log_velocity_ratings': 1})
 
     def build_settings(self, settings):
         settings.add_json_panel('Timer',
@@ -208,10 +209,11 @@ class ProjectApp(App):
     def finish_project(self, project_index):
         # go to project list
         self.go_projects(project_index)
-        # save velocity rating to history
-        self.velocity_history.append(self.projects.data[project_index]['logged'] /
-                                     self.projects.data[project_index]['estimated'])
-        self.save_velocity_history()
+        if self.config.get('ebs', 'log_velocity_ratings') == '1':
+            # save velocity rating to history
+            self.velocity_history.append(self.projects.data[project_index]['logged'] /
+                                         self.projects.data[project_index]['estimated'])
+            self.save_velocity_history()
         # delete project
         del self.projects.data[project_index]
         self.save_projects()

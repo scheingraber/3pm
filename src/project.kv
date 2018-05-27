@@ -55,13 +55,13 @@
                     size: self.size
 
             Button:
-                text: '<'
+                text: '< Back'
                 size_hint_x: None
-                width: self.height
+                width: 1.5*self.height
                 on_release: app.go_projects(-1)
 
             Label:
-                text: '3PM - Quick Session'
+                text: ''
                 font_size: '16sp'
 
         MutableRstDocumentTextInput:
@@ -122,9 +122,9 @@
                     size: self.size
 
             Button:
-                text: '<'
+                text: '< Back'
                 size_hint_x: None
-                width: self.height
+                width: 1.5*self.height
                 on_release: app.go_projects(root.project_index)
 
             MutableLabelTextInput:
@@ -214,15 +214,15 @@
             text: str("(%.1f/%i)" % (root.project_logged, root.project_estimated))
 
         Button:
-            text: 'Start'
+            text: 'Start >'
             size_hint_x: None
-            width: 1.2*self.height
+            width: 1.55*self.height
             on_release: app.edit_project(root.project_index); app.start_work(root.project_index)
 
         Button:
-            text: '>'
+            text: 'Show >'
             size_hint_x: None
-            width: self.height
+            width: 1.55*self.height
             on_release: app.edit_project(root.project_index)
 
 <Projects>:
@@ -249,9 +249,9 @@
                 width: self.height
 
             Button:
-                text: 'New Project...'
+                text: 'New Project'
                 size_hint_x: None
-                width: 2.8*self.height
+                width: 2.5*self.height
                 on_release: app.add_project()
 
             Button:
@@ -261,7 +261,7 @@
                 on_release: app.open_settings()
 
             Label:
-                text: '3PM'
+                text: ''
                 font_size: '16sp'
 
             Button:
