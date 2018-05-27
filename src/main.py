@@ -64,7 +64,6 @@ class ProjectView(Screen):
 
 
 class ProjectListItem(BoxLayout):
-
     def __init__(self, **kwargs):
         # print(kwargs)
         del kwargs['index']
@@ -77,7 +76,6 @@ class ProjectListItem(BoxLayout):
 
 
 class Projects(Screen):
-
     data = ListProperty()
 
     def args_converter(self, row_index, item):
@@ -99,7 +97,8 @@ class Timer(Screen):
         self.init(config)
         self.alarm_sound = SoundLoader.load('data/gong.wav')
         self.start_sound = SoundLoader.load('data/ticktock.wav')
-        self.running = False
+        self.running_down = False
+        self.running_up = False
         # init notification wrapper
         self.notification_wrapper = notification.Notification()
         # display time string
@@ -119,61 +118,6 @@ class Timer(Screen):
         # update display
         self.update_time_string()
 
-    def decrement_time(self, interval):
-        self.seconds -= 1
-        if self.seconds < 0:
-            self.minutes -= 1
-            self.seconds = 59
-        if self.minutes < 0:
-            self.alarm()
-        self.update_time_string()
-
-    def increment_time(self, interval):
-        self.seconds += 1
-        if self.seconds > 60:
-            self.minutes += 1
-            self.seconds = 0
-        self.update_time_string()
-
-    def start(self):
-        if not self.running:
-            # start decrementing time
-            Clock.unschedule(self.decrement_time)
-            Clock.schedule_interval(self.decrement_time, 1)
-            # store flag that timer is running
-            self.running = True
-            # play start sound if file found
-            if self.start_sound_activated and self.start_sound:
-                self.start_sound.play()
-
-    def stop(self):
-        if self.running:
-            # stop in- or decrementing time
-            # Clock.unschedule(self.increment_time)
-            Clock.unschedule(self.decrement_time)
-            # store flag that timer is not running
-            self.running = False
-            # reinitialize timer
-            self.minutes = self.session_length
-            self.seconds = 0
-            self.update_time_string()
-
-    def alarm(self):
-        # stop decrementing time
-        Clock.unschedule(self.decrement_time)
-        # set timer to 0:00
-        self.minutes = 0
-        self.seconds = 0
-        # update time string
-        self.update_time_string()
-        # show notification
-        if self.notification_activated:
-            self.notification_wrapper.notify(title="3PM", message="Session finished!",
-                                             timeout=self.notification_timeout)
-        # play alarm sound if file found
-        if self.start_sound_activated and self.alarm_sound:
-            self.alarm_sound.play()
-
     def update_time_string(self):
         # update string for clock
         self.time_string = str("%i:%02i" % (self.minutes, self.seconds))
@@ -184,7 +128,6 @@ class Timer(Screen):
 
 
 class ProjectApp(App):
-
     def build(self):
         # initialize settings
         self.use_kivy_settings = False
@@ -294,25 +237,43 @@ class ProjectApp(App):
         self.projects.data = data
 
     def go_projects(self, project_index):
+        # stop in- or decrementing time
+        Clock.unschedule(self.increment_time)
+        Clock.unschedule(self.decrement_time)
         # stop timer if running
-        if self.timer.running:
+        if self.timer.running_down:
             self.stop_work(project_index)
         # go to project view
         self.transition.direction = 'right'
         self.root.current = 'projects'
 
     def start_work(self, project_index):
-        # start timer
-        self.timer.start()
+        # start new session if timer completely stopped
+        if not self.timer.running_down and not self.timer.running_up:
+            # start timer
+            self.start_timer()
+            # set current project index
+            self.current_project_index = project_index
+
+        # or reset and start new session if timer runs up
+        if self.timer.running_up:
+            # stop counting up
+            self.stop_timer()
+            # start timer
+            self.start_timer()
+
+        # (nothing happens if session already running)
 
     def stop_work(self, project_index):
-        # log work
-        self.log_work(project_index)
+        # only log work when timer running down
+        if self.timer.running_down:
+            # log work
+            self.log_work(project_index)
+            # save log
+            self.refresh_projects()
+            self.save_projects()
         # stop timer
-        self.timer.stop()
-        # save log
-        self.refresh_projects()
-        self.save_projects()
+        self.stop_timer()
 
     def log_work(self, project_index):
         # get logged fractional unit: (full session time - remaining time) /  full session time
@@ -324,6 +285,75 @@ class ProjectApp(App):
         self.set_project_logged(project_index, logged_total)
         # update logged view
         self.timer.update_logged_string(logged_total)
+
+    def start_timer(self):
+        # stop in- or decrementing time
+        Clock.unschedule(self.increment_time)
+        Clock.unschedule(self.decrement_time)
+        # start decrementing time
+        Clock.schedule_interval(self.decrement_time, 1)
+        # store flags that timer is running down
+        self.timer.running_up = False
+        self.timer.running_down = True
+        # play start sound if file found
+        if self.timer.start_sound_activated and self.timer.start_sound:
+            self.timer.start_sound.play()
+
+    def stop_timer(self):
+        # stop in- or decrementing time
+        Clock.unschedule(self.increment_time)
+        Clock.unschedule(self.decrement_time)
+        # store flag that timer is not running down or up
+        self.timer.running_down = False
+        self.timer.running_up = False
+        # reinitialize timer
+        self.timer.minutes = self.timer.session_length
+        self.timer.seconds = 0
+        self.timer.update_time_string()
+
+    def decrement_time(self, interval):
+        # decrement time of timer
+        self.timer.seconds -= 1
+        if self.timer.seconds < 0:
+            self.timer.minutes -= 1
+            self.timer.seconds = 59
+        if self.timer.minutes < 0:
+            self.timer_alarm()
+        self.timer.update_time_string()
+
+    def increment_time(self, interval):
+        # increment time of timer
+        self.timer.seconds += 1
+        if self.timer.seconds > 60:
+            self.timer.minutes += 1
+            self.timer.seconds = 0
+        self.timer.update_time_string()
+
+    def timer_alarm(self):
+        # stop decrementing time
+        Clock.unschedule(self.decrement_time)
+        # set timer to 0:00
+        self.timer.minutes = 0
+        self.timer.seconds = 0
+        # update time string
+        self.timer.update_time_string()
+        # log work
+        self.log_work(self.current_project_index)
+        # save log
+        self.refresh_projects()
+        self.save_projects()
+        # store flags that timer is not running down but up
+        self.timer.running_down = False
+        self.timer.running_up = True
+        # start incrementing time
+        Clock.schedule_interval(self.increment_time, 1)
+        # show notification
+        if self.timer.notification_activated:
+            self.timer.notification_wrapper.notify(title="3PM", message="Session finished!",
+                                                   timeout=self.timer.notification_timeout)
+        # play alarm sound if file found
+        if self.timer.start_sound_activated and self.timer.alarm_sound:
+            self.timer.alarm_sound.play()
 
     @property
     def projects_fn(self):
