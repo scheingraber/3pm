@@ -208,6 +208,9 @@ class ProjectApp(App):
         self.timer.update_logged_string(project.get('logged'))
 
     def quick_session(self):
+        # remove previous quick view screen
+        if self.root.has_screen(""):
+            self.root.remove_widget(self.root.get_screen(""))
         view = QuickView(project_content="")
         self.root.add_widget(view)
         self.transition.direction = 'left'
