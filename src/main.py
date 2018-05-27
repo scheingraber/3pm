@@ -15,7 +15,7 @@ from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
 import notification
 from kivy.uix.settings import SettingsWithTabbedPanel
-from default_settings import timer_settings_json, ebs_settings_json
+from settings_info import timer_settings_json, ebs_settings_json
 
 __version__ = '0.5.1'
 
@@ -103,10 +103,11 @@ class Timer(Screen):
         self.update_time_string()
 
     def init(self, config):
-        # update sound and notification toggles
+        # update sound and notification
         self.start_sound_activated = config.get('timer', 'start_sound') == '1'
         self.end_sound_activated = config.get('timer', 'end_sound') == '1'
         self.notification_activated = config.get('timer', 'notification') == '1'
+        self.notification_timeout = float(config.get('timer', 'notification_timeout'))
         # update session length
         self.session_length = float(config.get('timer', 'session_length'))
         # initialize timer
@@ -157,14 +158,15 @@ class Timer(Screen):
     def alarm(self):
         # stop decrementing time
         Clock.unschedule(self.decrement_time)
-        # reset timer
+        # set timer to 0:00
         self.minutes = 0
         self.seconds = 0
         # update time string
         self.update_time_string()
         # show notification
         if self.notification_activated:
-            notification.Notification().notify(title="3PM", message="Session finished!", timeout=20)
+            notification.Notification().notify(title="3PM", message="Session finished!",
+                                               timeout=self.notification_timeout)
         # play alarm sound if file found
         if self.start_sound_activated and self.alarmSound:
             self.alarmSound.play()
@@ -200,6 +202,7 @@ class ProjectApp(App):
             'timer', {'start_sound': 1,
                       'end_sound': 1,
                       'notification': 1,
+                      'notification_timeout': 10,
                       'session_length': 25})
         config.setdefaults(
             'ebs',      {'keep_velocity_ratings': 0})
@@ -311,7 +314,8 @@ class ProjectApp(App):
     def log_work(self, project_index):
         # get logged fractional unit: (full session time - remaining time) /  full session time
         full_session_time = float(self.config.get('timer', 'session_length'))
-        logged_new = (full_session_time * 60. - (self.timer.minutes * 60. + self.timer.seconds)) / (full_session_time * 60.)
+        logged_new = (full_session_time * 60. - (self.timer.minutes * 60. + self.timer.seconds)) / \
+                     (full_session_time * 60.)
         logged_total = self.projects.data[project_index]['logged'] + logged_new
         # update logged
         self.set_project_logged(project_index, logged_total)
