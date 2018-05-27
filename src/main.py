@@ -310,7 +310,8 @@ class ProjectApp(App):
 
     def log_work(self, project_index):
         # get logged fractional unit: (full session time - remaining time) /  full session time
-        logged_new = (25*60. - (self.timer.minutes * 60. + self.timer.seconds)) / (25*60.)
+        full_session_time = float(self.config.get('timer', 'session_length'))
+        logged_new = (full_session_time * 60. - (self.timer.minutes * 60. + self.timer.seconds)) / (full_session_time * 60.)
         logged_total = self.projects.data[project_index]['logged'] + logged_new
         # update logged
         self.set_project_logged(project_index, logged_total)
