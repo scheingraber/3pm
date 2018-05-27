@@ -63,6 +63,12 @@ class ProjectView(Screen):
     project_estimated = NumericProperty()
 
 
+class ProjectViewSimple(Screen):
+    project_index = NumericProperty()
+    project_title = StringProperty()
+    project_content = StringProperty()
+
+
 class QuickView(Screen):
     project_content = StringProperty()
 
@@ -159,7 +165,7 @@ class ProjectApp(App):
                       'notification_timeout': 10,
                       'session_length': 25})
         config.setdefaults(
-            'ebs',      {'log_velocity_ratings': 1})
+            'ebs',      {'use_ebs': 1})
 
     def build_settings(self, settings):
         settings.add_json_panel('Timer',
@@ -209,7 +215,7 @@ class ProjectApp(App):
     def finish_project(self, project_index):
         # go to project list
         self.go_projects(project_index)
-        if self.config.get('ebs', 'log_velocity_ratings') == '1':
+        if self.config.get('ebs', 'use_ebs') == '1':
             # save velocity rating to history
             self.velocity_history.append(self.projects.data[project_index]['logged'] /
                                          self.projects.data[project_index]['estimated'])
@@ -226,12 +232,19 @@ class ProjectApp(App):
         if self.root.has_screen(name):
             self.root.remove_widget(self.root.get_screen(name))
 
-        view = ProjectView(name=name,
-                           project_index=project_index,
-                           project_title=project.get('title'),
-                           project_content=project.get('content'),
-                           project_estimated=project.get('estimated'),
-                           project_logged=project.get('logged'))
+        if self.config.get('ebs', 'use_ebs') == '1':
+            view = ProjectView(name=name,
+                               project_index=project_index,
+                               project_title=project.get('title'),
+                               project_content=project.get('content'),
+                               project_estimated=project.get('estimated'),
+                               project_logged=project.get('logged'))
+
+        else:
+            view = ProjectViewSimple(name=name,
+                                     project_index=project_index,
+                                     project_title=project.get('title'),
+                                     project_content=project.get('content'))
 
         self.root.add_widget(view)
         self.transition.direction = 'left'

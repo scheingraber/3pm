@@ -35,10 +35,8 @@ timer_settings_json = json.dumps([
      'key': 'session_length'}])
 
 ebs_settings_json = json.dumps([
-    {'type': 'title',
-     'title': 'History'},
     {'type': 'bool',
-     'title': 'Log Velocity Ratings',
-     'desc': 'Keep Velocity Ratings for Evidence-Based Scheduling',
+     'title': 'Use Evidence Based Scheduling',
+     'desc': 'Show EBS related functionality throughout app',
      'section': 'ebs',
-     'key': 'log_velocity_ratings'}])
+     'key': 'use_ebs'}])
