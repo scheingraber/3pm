@@ -203,6 +203,21 @@ class ProjectApp(App):
         # update timer logged view
         self.timer.update_logged_string(project.get('logged'))
 
+    def quick_session(self):
+        view = QuickView(
+            name=name,
+            project_index=project_index,
+            project_title=project.get('title'),
+            project_content=project.get('content'),
+            project_estimated=project.get('estimated'),
+            project_logged=project.get('logged'))
+
+        self.root.add_widget(view)
+        self.transition.direction = 'left'
+        self.root.current = view.name
+        # update timer logged view
+        self.timer.update_logged_string(project.get('logged'))
+
     def add_project(self):
         self.projects.data.append({'title': 'NewProject', 'content': '', 'logged': 0, 'estimated': 1})
         project_index = len(self.projects.data) - 1
