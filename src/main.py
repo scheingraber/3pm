@@ -63,6 +63,10 @@ class ProjectView(Screen):
     project_estimated = NumericProperty()
 
 
+class QuickView(Screen):
+    project_content = StringProperty()
+
+
 class ProjectListItem(BoxLayout):
     def __init__(self, **kwargs):
         # print(kwargs)
@@ -204,19 +208,11 @@ class ProjectApp(App):
         self.timer.update_logged_string(project.get('logged'))
 
     def quick_session(self):
-        view = QuickView(
-            name=name,
-            project_index=project_index,
-            project_title=project.get('title'),
-            project_content=project.get('content'),
-            project_estimated=project.get('estimated'),
-            project_logged=project.get('logged'))
-
+        view = QuickView(project_content="")
         self.root.add_widget(view)
         self.transition.direction = 'left'
         self.root.current = view.name
-        # update timer logged view
-        self.timer.update_logged_string(project.get('logged'))
+        self.start_timer()
 
     def add_project(self):
         self.projects.data.append({'title': 'NewProject', 'content': '', 'logged': 0, 'estimated': 1})
@@ -255,9 +251,13 @@ class ProjectApp(App):
         # stop in- or decrementing time
         Clock.unschedule(self.increment_time)
         Clock.unschedule(self.decrement_time)
-        # stop timer if running
-        if self.timer.running_down:
-            self.stop_work(project_index)
+        if project_index == -1:
+            # quick session view; stop timer
+            self.stop_timer()
+        else:
+            # project view; log work and stop timer
+            if self.timer.running_down:
+                self.stop_work(project_index)
         # go to project view
         self.transition.direction = 'right'
         self.root.current = 'projects'
@@ -280,11 +280,12 @@ class ProjectApp(App):
     def stop_work(self, project_index):
         # only log work when timer running down
         if self.timer.running_down:
-            # log work
-            self.log_work(project_index)
-            # save log
-            self.refresh_projects()
-            self.save_projects()
+            if not project_index == -1:
+                # log work
+                self.log_work(project_index)
+                # save log
+                self.refresh_projects()
+                self.save_projects()
         # stop timer
         self.stop_timer()
 

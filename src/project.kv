@@ -9,6 +9,7 @@
         Rectangle:
             size: self.size
 
+
 <MutableLabelTextInput@MutableTextInput>:
     Label:
         id: w_label
@@ -21,6 +22,7 @@
         text: root.text
         multiline: root.multiline
         on_focus: root.check_focus_and_view(self)
+
 
 <MutableRstDocumentTextInput@MutableTextInput>:
     RstDocument:
@@ -36,17 +38,77 @@
         on_focus: root.check_focus_and_view(self)
 
 
+<QuickView>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: '48dp'
+            padding: '5dp'
+            canvas:
+                Color:
+                    rgb: .3, .3, .3
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            Button:
+                text: '<'
+                size_hint_x: None
+                width: self.height
+                on_release: app.go_projects(-1)
+
+            Label:
+                text: '3PM - Quick Session'
+                font_size: '16sp'
+
+        MutableRstDocumentTextInput:
+            text: root.project_content
+            on_text: root.project_content = self.text
+
+        GridLayout:
+            height: '48dp'
+            rows: 2
+            padding: 10
+            spacing: 10
+            GridLayout:
+                size: root.size
+                rows: 1
+                padding: 10
+                spacing: 10
+
+                Label:
+                    font_size: '32sp'
+                    text: app.timer.time_string
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'middle'
+
+            GridLayout:
+                size: root.size
+                rows: 1
+                padding: 10
+                spacing: 10
+
+                Button:
+                    text: 'Start Session'
+                    on_press: app.start_work(-1)
+
+                Button:
+                    text: 'Stop Session'
+                    on_press: app.stop_work(-1)
+
 <ProjectView>:
     on_project_content: app.set_project_content(self.project_index, self.project_content)
     on_project_title: app.set_project_title(self.project_index, self.project_title)
     on_project_estimated: app.set_project_estimated(self.project_index, self.project_estimated)
 
     BoxLayout:
-
         orientation: 'vertical'
 
         BoxLayout:
-
             orientation: 'horizontal'
             size_hint_y: None
             height: '48dp'
@@ -126,7 +188,6 @@
                     on_press: app.stop_work(root.project_index)
 
 <ProjectListItem>:
-
     height: '48sp'
     size_hint_y: None
 
@@ -138,7 +199,6 @@
             size: self.width, 1
 
     BoxLayout:
-
         padding: '5dp'
 
         Label:
@@ -160,13 +220,10 @@
             on_release: app.edit_project(root.project_index)
 
 <Projects>:
-
     BoxLayout:
-
         orientation: 'vertical'
 
         BoxLayout:
-
             orientation: 'horizontal'
             size_hint_y: None
             height: '48dp'
