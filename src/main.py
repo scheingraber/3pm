@@ -262,8 +262,6 @@ class ProjectApp(App):
             # start timer
             self.start_timer()
 
-        # (nothing happens if session already running)
-
     def stop_work(self, project_index):
         # only log work when timer running down
         if self.timer.running_down:
