@@ -21,11 +21,16 @@ timer_settings_json = json.dumps([
      'desc': 'Show notification when a session ends',
      'section': 'timer',
      'key': 'notification'},
+    {'type': 'numeric',
+     'title': 'Notification Timeout',
+     'desc': 'Time notification is visible [in seconds]',
+     'section': 'timer',
+     'key': 'notification_timeout'},
     {'type': 'title',
      'title': 'Timer'},
     {'type': 'numeric',
      'title': 'Session Length',
-     'desc': 'Session interval length in minutes',
+     'desc': 'Session interval length [in minutes]',
      'section': 'timer',
      'key': 'session_length'}])
 
