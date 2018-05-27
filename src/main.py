@@ -66,7 +66,7 @@ class ProjectView(Screen):
 class ProjectListItem(BoxLayout):
 
     def __init__(self, **kwargs):
-        print(kwargs)
+        # print(kwargs)
         del kwargs['index']
         super(ProjectListItem, self).__init__(**kwargs)
     project_content = StringProperty()
@@ -94,12 +94,15 @@ class Timer(Screen):
     logged_string = StringProperty()
 
     def __init__(self, config, **kwargs):
+        super(Timer, self).__init__(**kwargs)
         # init settings and timer
         self.init(config)
         self.alarm_sound = SoundLoader.load('data/gong.wav')
         self.start_sound = SoundLoader.load('data/ticktock.wav')
         self.running = False
-        super(Timer, self).__init__(**kwargs)
+        # init notification wrapper
+        self.notification_wrapper = notification.Notification()
+        # display time string
         self.update_time_string()
 
     def init(self, config):
@@ -165,8 +168,8 @@ class Timer(Screen):
         self.update_time_string()
         # show notification
         if self.notification_activated:
-            notification.Notification().notify(title="3PM", message="Session finished!",
-                                               timeout=self.notification_timeout)
+            self.notification_wrapper.notify(title="3PM", message="Session finished!",
+                                             timeout=self.notification_timeout)
         # play alarm sound if file found
         if self.start_sound_activated and self.alarm_sound:
             self.alarm_sound.play()
