@@ -139,6 +139,9 @@ class ProjectApp(App):
         # initialize projects
         self.projects = Projects(name='projects')
         self.load_projects()
+        # initialize ebs history
+        self.velocity_history = []
+        self.load_velocity_history()
         # initialize timer
         self.timer = Timer(self.config)
         # screen management and transition
@@ -169,7 +172,20 @@ class ProjectApp(App):
         # reinitialize timer
         self.timer.init(config)
 
+    def load_velocity_history(self):
+        # load velocity history from file
+        if not exists(self.velocity_history_fn):
+            return
+        with open(self.velocity_history_fn) as fd:
+            self.velocity_history = json.load(fd)
+
+    def save_velocity_history(self):
+        # save velocity history to file
+        with open(self.velocity_history_fn, 'w') as fd:
+            json.dump(self.velocity_history, fd)
+
     def load_projects(self):
+        # load projects from file
         if not exists(self.projects_fn):
             return
         with open(self.projects_fn) as fd:
@@ -177,11 +193,26 @@ class ProjectApp(App):
         self.projects.data = data
 
     def save_projects(self):
+        # save projects to file
         with open(self.projects_fn, 'w') as fd:
             json.dump(self.projects.data, fd)
 
-    def del_project(self, project_index):
+    def delete_project(self, project_index):
+        # go to project list
         self.go_projects(project_index)
+        # delete project
+        del self.projects.data[project_index]
+        self.save_projects()
+        self.refresh_projects()
+
+    def finish_project(self, project_index):
+        # go to project list
+        self.go_projects(project_index)
+        # save velocity rating to history
+        self.velocity_history.append(self.projects.data[project_index]['logged'] /
+                                     self.projects.data[project_index]['estimated'])
+        self.save_velocity_history()
+        # delete project
         del self.projects.data[project_index]
         self.save_projects()
         self.refresh_projects()
@@ -193,13 +224,12 @@ class ProjectApp(App):
         if self.root.has_screen(name):
             self.root.remove_widget(self.root.get_screen(name))
 
-        view = ProjectView(
-            name=name,
-            project_index=project_index,
-            project_title=project.get('title'),
-            project_content=project.get('content'),
-            project_estimated=project.get('estimated'),
-            project_logged=project.get('logged'))
+        view = ProjectView(name=name,
+                           project_index=project_index,
+                           project_title=project.get('title'),
+                           project_content=project.get('content'),
+                           project_estimated=project.get('estimated'),
+                           project_logged=project.get('logged'))
 
         self.root.add_widget(view)
         self.transition.direction = 'left'
@@ -375,6 +405,10 @@ class ProjectApp(App):
     @property
     def projects_fn(self):
         return join(self.user_data_dir, 'projects.json')
+
+    @property
+    def velocity_history_fn(self):
+        return join(self.user_data_dir, 'velocity_history.json')
 
 
 if __name__ == '__main__':
