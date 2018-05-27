@@ -90,14 +90,14 @@ class Projects(Screen):
 
 
 class Timer(Screen):
-    timeString = StringProperty()
-    loggedString = StringProperty()
+    time_string = StringProperty()
+    logged_string = StringProperty()
 
     def __init__(self, config, **kwargs):
         # init settings and timer
         self.init(config)
-        self.alarmSound = SoundLoader.load('data/gong.wav')
-        self.startSound = SoundLoader.load('data/ticktock.wav')
+        self.alarm_sound = SoundLoader.load('data/gong.wav')
+        self.start_sound = SoundLoader.load('data/ticktock.wav')
         self.running = False
         super(Timer, self).__init__(**kwargs)
         self.update_time_string()
@@ -140,8 +140,8 @@ class Timer(Screen):
             # store flag that timer is running
             self.running = True
             # play start sound if file found
-            if self.start_sound_activated and self.startSound:
-                self.startSound.play()
+            if self.start_sound_activated and self.start_sound:
+                self.start_sound.play()
 
     def stop(self):
         if self.running:
@@ -168,16 +168,16 @@ class Timer(Screen):
             notification.Notification().notify(title="3PM", message="Session finished!",
                                                timeout=self.notification_timeout)
         # play alarm sound if file found
-        if self.start_sound_activated and self.alarmSound:
-            self.alarmSound.play()
+        if self.start_sound_activated and self.alarm_sound:
+            self.alarm_sound.play()
 
     def update_time_string(self):
         # update string for clock
-        self.timeString = str("%i:%02i" % (self.minutes, self.seconds))
+        self.time_string = str("%i:%02i" % (self.minutes, self.seconds))
 
     def update_logged_string(self, logged):
         # update string for logged view
-        self.loggedString = str("%.1f" % logged)
+        self.logged_string = str("%.1f" % logged)
 
 
 class ProjectApp(App):
