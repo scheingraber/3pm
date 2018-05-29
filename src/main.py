@@ -110,7 +110,7 @@ class Projects(Screen):
 
     def args_converter(self, row_index, item):
         if self.use_ebs:
-            project_progress_str = '%.f%%  (Estimated: %i)' % (item['logged']*100./item['estimated'], item['estimated'])
+            project_progress_str = '%.f%% (%i/%i)' % (item['logged']*100./item['estimated'], item['logged'], item['estimated'])
         else:
             project_progress_str = ''
 
@@ -165,7 +165,7 @@ class Timer(Screen):
 
 class ProjectApp(App):
     def build(self):
-        self.title = 'PyPomoProjectManager - 3PM'
+        self.title = '3PM'
         # initialize settings
         self.use_kivy_settings = False
         self.settings_cls = SettingsWithTabbedPanel
@@ -273,8 +273,8 @@ class ProjectApp(App):
 
         if self.config.get('ebs', 'use_ebs') == '1':
             # simulate completion of project
-            quartiles = self.simulate_completion(project_index)
-            quartiles = "%.1f/%.1f/%.1f/%.1f/%.1f\n (1%%/25%%/50%%/75%%/99%%)" % tuple(quartiles)
+            quartiles, completion = self.simulate_completion(project_index)
+            quartiles_string = "%.1f/%.1f/%.1f/%.1f\n%i%%/%i%%/%i%%/%i%%" % tuple(quartiles+completion)
 
             view = ProjectView(name=name,
                                project_index=project_index,
@@ -282,7 +282,7 @@ class ProjectApp(App):
                                project_content=project.get('content'),
                                project_estimated=project.get('estimated'),
                                project_logged=project.get('logged'),
-                               project_quartiles=quartiles)
+                               project_quartiles=quartiles_string)
 
         else:
             view = ProjectViewSimple(name=name,
@@ -307,7 +307,7 @@ class ProjectApp(App):
         self.start_timer()
 
     def add_project(self):
-        self.projects.data.append({'title': 'NewProject', 'content': '', 'logged': 0, 'estimated': 1})
+        self.projects.data.append({'title': 'New Task (double click to rename)', 'content': '', 'logged': 0, 'estimated': 1})
         project_index = len(self.projects.data) - 1
         self.edit_project(project_index)
 
@@ -478,8 +478,11 @@ class ProjectApp(App):
         # sort
         sessions_needed = sorted(sessions_needed)
         # pick quartiles
-        quartiles = [sessions_needed[i] for i in [0, 24, 49, 74, 99]]
-        return quartiles
+        quartiles = [sessions_needed[i] for i in [24, 49, 74, 99]]
+        # calc completion
+        logged = float(self.projects.data[project_index]['logged'])
+        completion = [logged*100 / quartiles[i] for i in [0, 1, 2, 3]]
+        return quartiles, completion
 
     @property
     def projects_fn(self):
