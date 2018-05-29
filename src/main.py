@@ -16,6 +16,7 @@ from kivy.core.audio import SoundLoader
 import notification
 from kivy.uix.settings import SettingsWithTabbedPanel
 from settings_info import timer_settings_json, ebs_settings_json
+import random
 
 __version__ = '0.6.0'
 
@@ -61,6 +62,7 @@ class ProjectView(Screen):
     project_content = StringProperty()
     project_logged = NumericProperty()
     project_estimated = NumericProperty()
+    project_quartiles = StringProperty()
 
 
 class ProjectViewSimple(Screen):
@@ -85,7 +87,6 @@ class ProjectListItem(BoxLayout):
     project_estimated = NumericProperty()
     project_progress = StringProperty()
 
-
 class Projects(Screen):
     data = ListProperty()
 
@@ -95,7 +96,7 @@ class Projects(Screen):
 
     def args_converter(self, row_index, item):
         if self.use_ebs:
-            project_progress_str = '%.f%%' % (item['logged']*100/item['estimated'])
+            project_progress_str = '%.f%%  (Estimated: %i)' % (item['logged']*100./item['estimated'], item['estimated'])
         else:
             project_progress_str = ''
 
@@ -145,7 +146,7 @@ class Timer(Screen):
 
     def update_logged_string(self, logged):
         # update string for logged view
-        self.logged_string = str("%.1f" % logged)
+        self.logged_string = str("Logged: %.1f" % logged)
 
 
 class ProjectApp(App):
@@ -199,11 +200,17 @@ class ProjectApp(App):
         self.root.current = 'projects'
 
     def load_velocity_history(self):
+        # bad default estimations, so we assume the worst until we have a good velocity history
+        default_estimations = [1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9]
         # load velocity history from file
-        if not exists(self.velocity_history_fn):
-            return
-        with open(self.velocity_history_fn) as fd:
-            self.velocity_history = json.load(fd)
+        if exists(self.velocity_history_fn):
+            with open(self.velocity_history_fn) as fd:
+                self.velocity_history = json.load(fd)
+                if len(self.velocity_history) < 5:
+                    self.velocity_history.extend(default_estimations)
+        else:
+            # assume bad estimation
+            self.velocity_history = default_estimations
 
     def save_velocity_history(self):
         # save velocity history to file
@@ -252,12 +259,17 @@ class ProjectApp(App):
             self.root.remove_widget(self.root.get_screen(name))
 
         if self.config.get('ebs', 'use_ebs') == '1':
+            # simulate completion of project
+            quartiles = self.simulate_completion(project_index)
+            quartiles = "%.1f/%.1f/%.1f/%.1f/%.1f\n (1%%/25%%/50%%/75%%/99%%)" % tuple(quartiles)
+
             view = ProjectView(name=name,
                                project_index=project_index,
                                project_title=project.get('title'),
                                project_content=project.get('content'),
                                project_estimated=project.get('estimated'),
-                               project_logged=project.get('logged'))
+                               project_logged=project.get('logged'),
+                               project_quartiles=quartiles)
 
         else:
             view = ProjectViewSimple(name=name,
@@ -435,6 +447,20 @@ class ProjectApp(App):
         # play alarm sound if file found
         if self.timer.start_sound_activated and self.timer.alarm_sound:
             self.timer.alarm_sound.play()
+
+    def simulate_completion(self, project_index):
+        # MC simulate completion of project
+        sessions_needed = []
+        for i in range(0, 100):
+            # randomly choose a velocity rating
+            vel = random.choice(self.velocity_history)
+            # simulate necessity sessions
+            sessions_needed.append(vel * self.projects.data[project_index]['estimated'])
+        # sort
+        sessions_needed = sorted(sessions_needed)
+        # pick quartiles
+        quartiles = [sessions_needed[i] for i in [0, 24, 49, 74, 99]]
+        return quartiles
 
     @property
     def projects_fn(self):

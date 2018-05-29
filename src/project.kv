@@ -164,8 +164,14 @@
                     valign: 'middle'
 
                 Label:
-                    font_size: '32sp'
+                    font_size: '16sp'
                     text: app.timer.logged_string
+                    halign: 'center'
+                    valign: 'middle'
+
+                Label:
+                    font_size: '16sp'
+                    text: 'Estimated:'
                     halign: 'center'
                     valign: 'middle'
 
@@ -174,6 +180,18 @@
                     multiline: False
                     on_text: root.project_estimated = self.text
                     text: str("%i" % root.project_estimated)
+                    halign: 'center'
+                    valign: 'middle'
+
+                Label:
+                    font_size: '16sp'
+                    text: 'Simulation:'
+                    halign: 'center'
+                    valign: 'middle'
+
+                Label:
+                    font_size: '16sp'
+                    text: root.project_quartiles
                     halign: 'center'
                     valign: 'middle'
 
