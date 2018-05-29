@@ -178,6 +178,8 @@ class ProjectApp(App):
     def on_config_change(self, config, section, key, value):
         # reinitialize timer
         self.timer.init(config)
+        # reinitalize project view
+
 
     def load_velocity_history(self):
         # load velocity history from file
