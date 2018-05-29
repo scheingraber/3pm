@@ -34,7 +34,6 @@ import random
 from kivy.utils import platform
 from plyer import vibrator
 
-
 __version__ = '0.6.1'
 
 
