@@ -337,6 +337,7 @@ class ProjectApp(App):
         self.root.add_widget(view)
         self.transition.direction = 'left'
         self.root.current = view.name
+        self.current_project_index = -1
         self.start_timer()
 
     def add_project(self):
@@ -486,7 +487,8 @@ class ProjectApp(App):
         # update time string
         self.timer.update_time_string()
         # log work
-        self.log_work(self.current_project_index)
+        if not self.current_project_index == -1:
+            self.log_work(self.current_project_index)
         # save log
         self.refresh_projects()
         self.save_projects()
@@ -495,9 +497,6 @@ class ProjectApp(App):
         self.timer.running_up = True
         # start incrementing time
         Clock.schedule_interval(self.increment_time, 1)
-        # vibrate on android
-        if platform == 'android':
-            vibrator.vibrate(2)
         # show notification
         if self.timer.notification_activated:
             self.timer.notification_wrapper.notify(title="3PM", message="Session finished!",
@@ -505,6 +504,9 @@ class ProjectApp(App):
         # play alarm sound if file found
         if self.timer.start_sound_activated and self.timer.alarm_sound:
             self.timer.alarm_sound.play()
+        # vibrate on android
+        if platform == 'android':
+            vibrator.vibrate(2)
 
     def simulate_completion(self, project_index):
         # only use most recent histories
