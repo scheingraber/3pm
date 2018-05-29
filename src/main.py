@@ -189,7 +189,14 @@ class ProjectApp(App):
     def on_config_change(self, config, section, key, value):
         # reinitialize timer
         self.timer.init(config)
-
+        # reinitialize projects
+        self.projects = Projects(name='projects', config=config)
+        self.load_projects()
+        # update projects view config
+        self.projects.use_ebs = config.get('ebs', 'use_ebs') == '1'
+        self.root.remove_widget(self.root.get_screen('projects'))
+        self.root.add_widget(self.projects)
+        self.root.current = 'projects'
 
     def load_velocity_history(self):
         # load velocity history from file

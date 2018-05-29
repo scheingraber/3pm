@@ -37,6 +37,6 @@ timer_settings_json = json.dumps([
 ebs_settings_json = json.dumps([
     {'type': 'bool',
      'title': 'Enable Evidence Based Scheduling',
-     'desc': 'Show EBS related functionality throughout app',
+     'desc': 'Show logging and EBS related functionality throughout app',
      'section': 'ebs',
      'key': 'use_ebs'}])
