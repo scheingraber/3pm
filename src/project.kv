@@ -130,15 +130,15 @@
                 on_text: root.project_title = self.text
 
             Button:
-                text: 'Delete Project'
+                text: 'Delete Task'
                 size_hint_x: None
-                width: 3*self.height
+                width: 2.4*self.height
                 on_release: app.delete_project(root.project_index)
 
             Button:
-                text: 'Finish Project'
+                text: 'Finish Task'
                 size_hint_x: None
-                width: 3*self.height
+                width: 2.4*self.height
                 on_release: app.finish_project(root.project_index)
 
         MutableRstDocumentTextInput:
@@ -263,15 +263,15 @@
                 on_text: root.project_title = self.text
 
             Button:
-                text: 'Delete Project'
+                text: 'Delete Task'
                 size_hint_x: None
-                width: 3*self.height
+                width: 2.4*self.height
                 on_release: app.delete_project(root.project_index)
 
             Button:
-                text: 'Finish Project'
+                text: 'Finish Task'
                 size_hint_x: None
-                width: 3*self.height
+                width: 2.4*self.height
                 on_release: app.finish_project(root.project_index)
 
         MutableRstDocumentTextInput:
@@ -365,9 +365,9 @@
                 width: self.height
 
             Button:
-                text: 'New Project'
+                text: 'New Task'
                 size_hint_x: None
-                width: 2.5*self.height
+                width: 2.1*self.height
                 on_release: app.add_project()
 
             Button:
