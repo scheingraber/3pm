@@ -101,7 +101,7 @@
 <ProjectView>:
     on_project_content: app.set_project_content(self.project_index, self.project_content)
     on_project_title: app.set_project_title(self.project_index, self.project_title)
-    on_project_estimated: app.set_project_estimated(self.project_index, self.project_estimated)
+    on_project_estimated: app.set_project_estimated(self.project_index, self.project_estimated); app.update_simulation_string(self.project_index)
 
     BoxLayout:
         orientation: 'vertical'
@@ -205,7 +205,7 @@
 
                     Label:
                         font_size: '16sp'
-                        text: root.project_quartiles
+                        text: app.timer.simulation_string
                         halign: 'center'
                         valign: 'middle'
 

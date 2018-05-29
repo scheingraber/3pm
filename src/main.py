@@ -101,6 +101,7 @@ class ProjectListItem(BoxLayout):
     project_estimated = NumericProperty()
     project_progress = StringProperty()
 
+
 class Projects(Screen):
     data = ListProperty()
 
@@ -126,6 +127,7 @@ class Projects(Screen):
 class Timer(Screen):
     time_string = StringProperty()
     logged_string = StringProperty()
+    simulation_string = StringProperty()
 
     def __init__(self, config, **kwargs):
         super(Timer, self).__init__(**kwargs)
@@ -162,6 +164,10 @@ class Timer(Screen):
         # update string for logged view
         self.logged_string = "%.1f" % logged
 
+    def update_simulation_string(self, simulation_string):
+        # update string
+        self.simulation_string = simulation_string
+
 
 class ProjectApp(App):
     def build(self):
@@ -177,6 +183,7 @@ class ProjectApp(App):
         self.load_velocity_history()
         # initialize timer
         self.timer = Timer(self.config)
+        self.simulation_string = StringProperty()
         # screen management and transition
         self.transition = SlideTransition(duration=.35)
         root = ScreenManager(transition=self.transition)
@@ -272,17 +279,12 @@ class ProjectApp(App):
             self.root.remove_widget(self.root.get_screen(name))
 
         if self.config.get('ebs', 'use_ebs') == '1':
-            # simulate completion of project
-            quartiles, completion = self.simulate_completion(project_index)
-            quartiles_string = "%.1f/%.1f/%.1f/%.1f\n%i%%/%i%%/%i%%/%i%%" % tuple(quartiles+completion)
-
             view = ProjectView(name=name,
                                project_index=project_index,
                                project_title=project.get('title'),
                                project_content=project.get('content'),
                                project_estimated=project.get('estimated'),
-                               project_logged=project.get('logged'),
-                               project_quartiles=quartiles_string)
+                               project_logged=project.get('logged'))
 
         else:
             view = ProjectViewSimple(name=name,
@@ -295,6 +297,8 @@ class ProjectApp(App):
         self.root.current = view.name
         # update timer logged view
         self.timer.update_logged_string(project.get('logged'))
+        # update simulation string
+        self.update_simulation_string(project_index)
 
     def quick_session(self):
         # remove previous quick view screen
@@ -307,7 +311,7 @@ class ProjectApp(App):
         self.start_timer()
 
     def add_project(self):
-        self.projects.data.append({'title': 'New Task (double click to rename)', 'content': '', 'logged': 0, 'estimated': 1})
+        self.projects.data.append({'title': 'Unnamed Task', 'content': '', 'logged': 0, 'estimated': 1})
         project_index = len(self.projects.data) - 1
         self.edit_project(project_index)
 
@@ -325,9 +329,16 @@ class ProjectApp(App):
         self.refresh_projects()
 
     def set_project_estimated(self, project_index, estimated):
-        self.projects.data[project_index]['estimated'] = float(estimated)
+        new_estimate = float(estimated)
+        # sanity check
+        if not new_estimate > 0:
+            new_estimate = 1.0
+        # save new estimate to project
+        self.projects.data[project_index]['estimated'] = new_estimate
         self.save_projects()
         self.refresh_projects()
+        # update simulation string
+        self.update_simulation_string(project_index)
 
     def set_project_logged(self, project_index, logged):
         self.projects.data[project_index]['logged'] = float(logged)
@@ -391,6 +402,8 @@ class ProjectApp(App):
         self.set_project_logged(project_index, logged_total)
         # update logged view
         self.timer.update_logged_string(logged_total)
+        # update simulation view
+        self.update_simulation_string(project_index)
 
     def start_timer(self):
         # stop in- or decrementing time
@@ -483,6 +496,12 @@ class ProjectApp(App):
         logged = float(self.projects.data[project_index]['logged'])
         completion = [logged*100 / quartiles[i] for i in [0, 1, 2, 3]]
         return quartiles, completion
+
+    def update_simulation_string(self, project_index):
+        # simulate completion of project
+        quartiles, completion = self.simulate_completion(project_index)
+        simulation_string = "%.1f/%.1f/%.1f/%.1f\n%i%%/%i%%/%i%%/%i%%" % tuple(quartiles+completion)
+        self.timer.update_simulation_string(simulation_string)
 
     @property
     def projects_fn(self):
