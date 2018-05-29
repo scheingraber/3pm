@@ -177,13 +177,14 @@ class ProjectApp(App):
                       'notification_timeout': 10,
                       'session_length': 25})
         config.setdefaults(
-            'ebs',      {'use_ebs': 1})
+            'ebs',      {'use_ebs': 1,
+                         'number_history': 50})
 
     def build_settings(self, settings):
         settings.add_json_panel('Timer',
                                 self.config,
                                 data=timer_settings_json)
-        settings.add_json_panel('EBS',
+        settings.add_json_panel('Simulation',
                                 self.config,
                                 data=ebs_settings_json)
 
@@ -200,17 +201,13 @@ class ProjectApp(App):
         self.root.current = 'projects'
 
     def load_velocity_history(self):
-        # bad default estimations, so we assume the worst until we have a good velocity history
-        default_estimations = [1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9]
         # load velocity history from file
         if exists(self.velocity_history_fn):
             with open(self.velocity_history_fn) as fd:
                 self.velocity_history = json.load(fd)
-                if len(self.velocity_history) < 5:
-                    self.velocity_history.extend(default_estimations)
         else:
             # assume bad estimation
-            self.velocity_history = default_estimations
+            self.velocity_history = [1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9]
 
     def save_velocity_history(self):
         # save velocity history to file
@@ -242,10 +239,12 @@ class ProjectApp(App):
         # go to project list
         self.go_projects(project_index)
         if self.config.get('ebs', 'use_ebs') == '1':
-            # save velocity rating to history
-            self.velocity_history.append(self.projects.data[project_index]['logged'] /
-                                         self.projects.data[project_index]['estimated'])
-            self.save_velocity_history()
+            # get velocity rating
+            vel_rating = self.projects.data[project_index]['logged'] / self.projects.data[project_index]['estimated']
+            if vel_rating > 0:
+                # save velocity rating to history
+                self.velocity_history.append(vel_rating)
+                self.save_velocity_history()
         # delete project
         del self.projects.data[project_index]
         self.save_projects()
@@ -449,11 +448,17 @@ class ProjectApp(App):
             self.timer.alarm_sound.play()
 
     def simulate_completion(self, project_index):
+        # only use most recent histories
+        number_history = int(self.config.get('ebs', 'number_history'))
+        if len(self.velocity_history) > number_history:
+            velocity_history = self.velocity_history[-number_history:]
+        else:
+            velocity_history = self.velocity_history
         # MC simulate completion of project
         sessions_needed = []
         for i in range(0, 100):
             # randomly choose a velocity rating
-            vel = random.choice(self.velocity_history)
+            vel = random.choice(velocity_history)
             # simulate necessity sessions
             sessions_needed.append(vel * self.projects.data[project_index]['estimated'])
         # sort

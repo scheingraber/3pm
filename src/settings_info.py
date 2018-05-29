@@ -36,7 +36,12 @@ timer_settings_json = json.dumps([
 
 ebs_settings_json = json.dumps([
     {'type': 'bool',
-     'title': 'Enable Evidence Based Scheduling',
-     'desc': 'Show logging and EBS related functionality throughout app',
+     'title': 'Enable Logging and Simulation',
+     'desc': 'Show logging and completion simulation functionality throughout app',
      'section': 'ebs',
-     'key': 'use_ebs'}])
+     'key': 'use_ebs'},
+    {'type': 'numeric',
+     'title': 'Number of Used Velocity Ratings',
+     'desc': 'Number of most recent velocity ratings from estimation history to use for simulation',
+     'section': 'ebs',
+     'key': 'number_history'}])
