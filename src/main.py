@@ -83,18 +83,29 @@ class ProjectListItem(BoxLayout):
     project_index = NumericProperty()
     project_logged = NumericProperty()
     project_estimated = NumericProperty()
+    project_progress = StringProperty()
 
 
 class Projects(Screen):
     data = ListProperty()
 
+    def __init__(self, name, config):
+        super(Projects, self).__init__(name=name)
+        self.use_ebs = config.get('ebs', 'use_ebs') == '1'
+
     def args_converter(self, row_index, item):
+        if self.use_ebs:
+            project_progress_str = '%.f%%' % (item['logged']*100/item['estimated'])
+        else:
+            project_progress_str = ''
+
         return {
             'project_index': row_index,
             'project_content': item['content'],
             'project_title': item['title'],
             'project_logged': item['logged'],
-            'project_estimated': item['estimated']}
+            'project_estimated': item['estimated'],
+            'project_progress': project_progress_str}
 
 
 class Timer(Screen):
@@ -144,7 +155,7 @@ class ProjectApp(App):
         self.use_kivy_settings = False
         self.settings_cls = SettingsWithTabbedPanel
         # initialize projects
-        self.projects = Projects(name='projects')
+        self.projects = Projects(name='projects', config=self.config)
         self.load_projects()
         # initialize ebs history
         self.velocity_history = []
@@ -178,7 +189,6 @@ class ProjectApp(App):
     def on_config_change(self, config, section, key, value):
         # reinitialize timer
         self.timer.init(config)
-        # reinitalize project view
 
 
     def load_velocity_history(self):
