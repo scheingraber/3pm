@@ -142,11 +142,11 @@ class Timer(Screen):
 
     def update_time_string(self):
         # update string for clock
-        self.time_string = str("%i:%02i" % (self.minutes, self.seconds))
+        self.time_string = "%i:%02i" % (self.minutes, self.seconds)
 
     def update_logged_string(self, logged):
         # update string for logged view
-        self.logged_string = str("Logged: %.1f" % logged)
+        self.logged_string = "%.1f" % logged
 
 
 class ProjectApp(App):

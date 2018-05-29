@@ -163,37 +163,49 @@
                     halign: 'center'
                     valign: 'middle'
 
-                Label:
-                    font_size: '16sp'
-                    text: app.timer.logged_string
-                    halign: 'center'
-                    valign: 'middle'
+                GridLayout:
+                    size: root.size
+                    cols: 2
+                    padding: 10
+                    spacing: 10
 
-                Label:
-                    font_size: '16sp'
-                    text: 'Estimated:'
-                    halign: 'center'
-                    valign: 'middle'
+                    Label:
+                        font_size: '16sp'
+                        text: 'Logged:'
+                        halign: 'center'
+                        valign: 'middle'
 
-                MutableLabelTextInput:
-                    font_size: '16sp'
-                    multiline: False
-                    on_text: root.project_estimated = self.text
-                    text: str("%i" % root.project_estimated)
-                    halign: 'center'
-                    valign: 'middle'
+                    Label:
+                        font_size: '16sp'
+                        text: app.timer.logged_string
+                        halign: 'center'
+                        valign: 'middle'
 
-                Label:
-                    font_size: '16sp'
-                    text: 'Simulation:'
-                    halign: 'center'
-                    valign: 'middle'
+                    Label:
+                        font_size: '16sp'
+                        text: 'Estimated:'
+                        halign: 'center'
+                        valign: 'middle'
 
-                Label:
-                    font_size: '16sp'
-                    text: root.project_quartiles
-                    halign: 'center'
-                    valign: 'middle'
+                    MutableLabelTextInput:
+                        font_size: '16sp'
+                        multiline: False
+                        on_text: root.project_estimated = self.text
+                        text: str("%i" % root.project_estimated)
+                        halign: 'center'
+                        valign: 'middle'
+
+                    Label:
+                        font_size: '16sp'
+                        text: 'Simulation:'
+                        halign: 'center'
+                        valign: 'middle'
+
+                    Label:
+                        font_size: '16sp'
+                        text: root.project_quartiles
+                        halign: 'center'
+                        valign: 'middle'
 
             GridLayout:
                 size: root.size
