@@ -32,8 +32,10 @@ from kivy.uix.settings import SettingsWithTabbedPanel
 from settings_info import timer_settings_json, ebs_settings_json
 import random
 from kivy.utils import platform
+from plyer import vibrator
 
-__version__ = '0.6.0'
+
+__version__ = '0.6.1'
 
 
 class MutableTextInput(FloatLayout):
@@ -494,6 +496,9 @@ class ProjectApp(App):
         self.timer.running_up = True
         # start incrementing time
         Clock.schedule_interval(self.increment_time, 1)
+        # vibrate on android
+        if platform == 'android':
+            vibrator.vibrate(2)
         # show notification
         if self.timer.notification_activated:
             self.timer.notification_wrapper.notify(title="3PM", message="Session finished!",
