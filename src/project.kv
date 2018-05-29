@@ -98,6 +98,126 @@
                     font_size: '32sp'
                     on_press: app.stop_work(-1)
 
+<ProjectViewWithoutNotepad>:
+    on_project_title: app.set_project_title(self.project_index, self.project_title)
+    on_project_estimated: app.set_project_estimated(self.project_index, self.project_estimated); app.update_simulation_string(self.project_index)
+
+    BoxLayout:
+        orientation: 'vertical'
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: '48dp'
+            padding: '5dp'
+
+            canvas:
+                Color:
+                    rgb: .3, .3, .3
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            Button:
+                text: '< Back'
+                size_hint_x: None
+                width: 1.5*self.height
+                on_release: app.go_projects(root.project_index)
+
+            MutableLabelTextInput:
+                text: root.project_title
+                font_size: '16sp'
+                multiline: False
+                on_text: root.project_title = self.text
+
+            Button:
+                text: 'Delete Task'
+                size_hint_x: None
+                width: 2.4*self.height
+                on_release: app.delete_project(root.project_index)
+
+            Button:
+                text: 'Finish Task'
+                size_hint_x: None
+                width: 2.4*self.height
+                on_release: app.finish_project(root.project_index)
+
+        GridLayout:
+            height: '48dp'
+            rows: 2
+            padding: 10
+            spacing: 10
+            GridLayout:
+                size: root.size
+                rows: 1
+                padding: 10
+                spacing: 10
+
+                Label:
+                    font_size: '64sp'
+                    text: app.timer.time_string
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'middle'
+
+                GridLayout:
+                    size: root.size
+                    cols: 2
+                    padding: 10
+                    spacing: 10
+
+                    Label:
+                        font_size: '16sp'
+                        text: 'Logged:'
+                        halign: 'center'
+                        valign: 'middle'
+
+                    Label:
+                        font_size: '16sp'
+                        text: app.timer.logged_string
+                        halign: 'center'
+                        valign: 'middle'
+
+                    Label:
+                        font_size: '16sp'
+                        text: 'Estimated:'
+                        halign: 'center'
+                        valign: 'middle'
+
+                    MutableLabelTextInput:
+                        font_size: '16sp'
+                        multiline: False
+                        on_text: root.project_estimated = self.text
+                        text: str("%i" % root.project_estimated)
+                        halign: 'center'
+                        valign: 'middle'
+
+                    Label:
+                        font_size: '16sp'
+                        text: 'Estimate Quartiles:\nCompletion Quartiles:'
+                        halign: 'center'
+                        valign: 'middle'
+
+                    Label:
+                        font_size: '16sp'
+                        text: app.timer.simulation_string
+                        halign: 'center'
+                        valign: 'middle'
+
+            GridLayout:
+                size: root.size
+                rows: 1
+                padding: 10
+                spacing: 10
+                Button:
+                    text: 'Start Session'
+                    font_size: '32sp'
+                    on_press: app.start_work(root.project_index)
+                Button:
+                    text: 'Stop Session'
+                    font_size: '32sp'
+                    on_press: app.stop_work(root.project_index)
+
 <ProjectView>:
     on_project_content: app.set_project_content(self.project_index, self.project_content)
     on_project_title: app.set_project_title(self.project_index, self.project_title)
@@ -223,8 +343,84 @@
                     font_size: '32sp'
                     on_press: app.stop_work(root.project_index)
 
+<ProjectViewSimpleWithoutNotepad>:
+    on_project_title: app.set_project_title(self.project_index, self.project_title)
+
+    BoxLayout:
+        orientation: 'vertical'
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: '48dp'
+            padding: '5dp'
+
+            canvas:
+                Color:
+                    rgb: .3, .3, .3
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            Button:
+                text: '< Back'
+                size_hint_x: None
+                width: 1.5*self.height
+                on_release: app.go_projects(root.project_index)
+
+            MutableLabelTextInput:
+                text: root.project_title
+                font_size: '16sp'
+                multiline: False
+                on_text: root.project_title = self.text
+
+            Button:
+                text: 'Delete Task'
+                size_hint_x: None
+                width: 2.4*self.height
+                on_release: app.delete_project(root.project_index)
+
+            Button:
+                text: 'Finish Task'
+                size_hint_x: None
+                width: 2.4*self.height
+                on_release: app.finish_project(root.project_index)
+
+        GridLayout:
+            height: '48dp'
+            rows: 2
+            padding: 10
+            spacing: 10
+            GridLayout:
+                size: root.size
+                rows: 1
+                padding: 10
+                spacing: 10
+
+                Label:
+                    font_size: '64sp'
+                    text: app.timer.time_string
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'middle'
+
+            GridLayout:
+                size: root.size
+                rows: 1
+                padding: 10
+                spacing: 10
+                Button:
+                    text: 'Start Session'
+                    font_size: '32sp'
+                    on_press: app.start_work(root.project_index)
+                Button:
+                    text: 'Stop Session'
+                    font_size: '32sp'
+                    on_press: app.stop_work(root.project_index)
+
 <ProjectViewSimple>:
     on_project_content: app.set_project_content(self.project_index, self.project_content)
+    on_project_title: app.set_project_title(self.project_index, self.project_title)
 
     BoxLayout:
         orientation: 'vertical'

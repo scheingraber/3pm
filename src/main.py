@@ -31,6 +31,7 @@ import notification
 from kivy.uix.settings import SettingsWithTabbedPanel
 from settings_info import timer_settings_json, ebs_settings_json
 import random
+from kivy.utils import platform
 
 __version__ = '0.6.0'
 
@@ -79,10 +80,23 @@ class ProjectView(Screen):
     project_quartiles = StringProperty()
 
 
+class ProjectViewWithoutNotepad(Screen):
+    project_index = NumericProperty()
+    project_title = StringProperty()
+    project_logged = NumericProperty()
+    project_estimated = NumericProperty()
+    project_quartiles = StringProperty()
+
+
 class ProjectViewSimple(Screen):
     project_index = NumericProperty()
     project_title = StringProperty()
     project_content = StringProperty()
+
+
+class ProjectViewSimpleWithoutNotepad(Screen):
+    project_index = NumericProperty()
+    project_title = StringProperty()
 
 
 class QuickView(Screen):
@@ -196,7 +210,8 @@ class ProjectApp(App):
                       'end_sound': 1,
                       'notification': 1,
                       'notification_timeout': 10,
-                      'session_length': 25})
+                      'session_length': 25,
+                      'use_notepad': 1})
         config.setdefaults(
             'ebs',      {'use_ebs': 1,
                          'number_history': 50})
@@ -279,19 +294,32 @@ class ProjectApp(App):
             self.root.remove_widget(self.root.get_screen(name))
 
         if self.config.get('ebs', 'use_ebs') == '1':
-            view = ProjectView(name=name,
-                               project_index=project_index,
-                               project_title=project.get('title'),
-                               project_content=project.get('content'),
-                               project_estimated=project.get('estimated'),
-                               project_logged=project.get('logged'))
+            if self.config.get('timer', 'use_notepad') == '0' or platform == 'android':
+                view = ProjectViewWithoutNotepad(name=name,
+                                                 project_index=project_index,
+                                                 project_title=project.get('title'),
+                                                 project_estimated=project.get('estimated'),
+                                                 project_logged=project.get('logged'))
+            else:
+                view = ProjectView(name=name,
+                                   project_index=project_index,
+                                   project_title=project.get('title'),
+                                   project_content=project.get('content'),
+                                   project_estimated=project.get('estimated'),
+                                   project_logged=project.get('logged'))
 
         else:
-            view = ProjectViewSimple(name=name,
-                                     project_index=project_index,
-                                     project_title=project.get('title'),
-                                     project_content=project.get('content'))
+            if self.config.get('timer', 'use_notepad') == '0' or platform == 'android':
+                view = ProjectViewSimpleWithoutNotepad(name=name,
+                                                       project_index=project_index,
+                                                       project_title=project.get('title'))
+            else:
+                view = ProjectViewSimple(name=name,
+                                         project_index=project_index,
+                                         project_title=project.get('title'),
+                                         project_content=project.get('content'))
 
+        # add widget to root
         self.root.add_widget(view)
         self.transition.direction = 'left'
         self.root.current = view.name

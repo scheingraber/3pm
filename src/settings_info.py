@@ -32,7 +32,14 @@ timer_settings_json = json.dumps([
      'title': 'Session Length',
      'desc': 'Session interval length [in minutes]',
      'section': 'timer',
-     'key': 'session_length'}])
+     'key': 'session_length'},
+    {'type': 'title',
+     'title': 'Notepad'},
+    {'type': 'bool',
+     'title': 'Enable Task Notepad',
+     'desc': 'Save notes for each task',
+     'section': 'timer',
+     'key': 'use_notepad'}])
 
 ebs_settings_json = json.dumps([
     {'type': 'bool',
