@@ -4,6 +4,8 @@
 ## Introduction
 Personal Pomodoro Productivity Manager (3PM) is a task-based productivity timer. It furthermore allows to simulate the likely completion of a task using the accuracy of earlier estimates.
 
+Find out more on the [official website](https://chrispara.github.io/3pm/)!
+
 ## Theoretical Background
 The idea that productivity can best be maintained maintained with highly concentrated work sessions which are interrupted by short breaks is the basis of the [pomodoro technique](https://en.wikipedia.org/wiki/Pomodoro_Technique).
 3PM is a task list and pomodoro timer. The completion probability of tasks is simulated lending some ideas from [Evidence-based scheduling](https://www.joelonsoftware.com/2007/10/26/evidence-based-scheduling/) (Cumulative Distribution Function of completion date, obtained using Monte-Carlo Simulation).
