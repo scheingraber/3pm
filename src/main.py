@@ -34,7 +34,7 @@ import random
 from kivy.utils import platform
 from plyer import vibrator
 
-__version__ = '0.6.2'
+__version__ = '0.6.3'
 
 
 class MutableTextInput(FloatLayout):
@@ -206,16 +206,30 @@ class ProjectApp(App):
         return root
 
     def build_config(self, config):
-        config.setdefaults(
-            'timer', {'start_sound': 1,
-                      'end_sound': 1,
-                      'notification': 1,
-                      'notification_timeout': 10,
-                      'session_length': 25,
-                      'use_notepad': 1})
-        config.setdefaults(
-            'ebs',      {'use_ebs': 1,
-                         'number_history': 50})
+        if platform == 'android':
+            # android defaults
+            config.setdefaults(
+                'timer', {'start_sound': 1,
+                          'end_sound': 1,
+                          'notification': 1,
+                          'notification_timeout': 10,
+                          'session_length': 25,
+                          'use_notepad': 0})
+            config.setdefaults(
+                'ebs',      {'use_ebs': 1,
+                             'number_history': 50})
+        else:
+            # defaults for desktop computers
+            config.setdefaults(
+                'timer', {'start_sound': 1,
+                          'end_sound': 1,
+                          'notification': 0,
+                          'notification_timeout': 10,
+                          'session_length': 25,
+                          'use_notepad': 1})
+            config.setdefaults(
+                'ebs',      {'use_ebs': 1,
+                             'number_history': 50})
 
     def build_settings(self, settings):
         settings.add_json_panel('Timer',
@@ -295,7 +309,7 @@ class ProjectApp(App):
             self.root.remove_widget(self.root.get_screen(name))
 
         if self.config.get('ebs', 'use_ebs') == '1':
-            if self.config.get('timer', 'use_notepad') == '0' or platform == 'android':
+            if self.config.get('timer', 'use_notepad') == '0':
                 view = ProjectViewWithoutNotepad(name=name,
                                                  project_index=project_index,
                                                  project_title=project.get('title'),
@@ -310,7 +324,7 @@ class ProjectApp(App):
                                    project_logged=project.get('logged'))
 
         else:
-            if self.config.get('timer', 'use_notepad') == '0' or platform == 'android':
+            if self.config.get('timer', 'use_notepad') == '0':
                 view = ProjectViewSimpleWithoutNotepad(name=name,
                                                        project_index=project_index,
                                                        project_title=project.get('title'))
@@ -534,7 +548,7 @@ class ProjectApp(App):
     def update_simulation_string(self, project_index):
         # simulate completion of project
         quartiles, completion = self.simulate_completion(project_index)
-        simulation_string = "%.1f/%.1f/%.1f/%.1f\n%i%%/%i%%/%i%%/%i%%" % tuple(quartiles+completion)
+        simulation_string = "%i/%i/%i/%i\n%i%%/%i%%/%i%%/%i%%" % tuple(quartiles+completion)
         self.timer.update_simulation_string(simulation_string)
 
     @property

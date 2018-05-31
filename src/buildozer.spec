@@ -4,7 +4,7 @@
 title = 3PM
 
 # (str) Package name
-package.name = PyPomoProjectManager
+package.name = PPPManager
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = org.test
@@ -38,7 +38,7 @@ presplash.filename = %(source.dir)s/data/icon.png
 icon.filename = %(source.dir)s/data/icon.png
 
 # (str) Supported orientation (one of landscape, portrait or all)
-orientation = all
+orientation = portrait
 
 # (bool) Indicate if the application should be fullscreen or not
 fullscreen = 1
