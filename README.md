@@ -2,7 +2,7 @@
 ----------------------------------------------
 
 ## Introduction
-Personal Pomodoro Productivity Manager (3PM) is a task-based productivity timer. It furthermore allows to simulate to likely completion of a task.
+Personal Pomodoro Productivity Manager (3PM) is a task-based productivity timer. It furthermore allows to simulate the likely completion of a task using the accuracy of earlier estimates.
 
 ## Theoretical Background
 The idea that productivity can best be maintained maintained with highly concentrated work sessions which are interrupted by short breaks is the basis of the [pomodoro technique](https://en.wikipedia.org/wiki/Pomodoro_Technique).
