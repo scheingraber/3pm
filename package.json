@@ -1,0 +1,103 @@
+{
+  "_args": [
+    [
+      "startbootstrap-creative",
+      "/mnt/d/projects"
+    ]
+  ],
+  "_from": "startbootstrap-creative@latest",
+  "_id": "startbootstrap-creative@4.0.0",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/startbootstrap-creative",
+  "_nodeVersion": "7.8.0",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/startbootstrap-creative-4.0.0.tgz_1517258921595_0.7146478109061718"
+  },
+  "_npmUser": {
+    "email": "feedback@startbootstrap.com",
+    "name": "startbootstrap"
+  },
+  "_npmVersion": "5.6.0",
+  "_phantomChildren": {},
+  "_requested": {
+    "name": "startbootstrap-creative",
+    "raw": "startbootstrap-creative",
+    "rawSpec": "",
+    "scope": null,
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/startbootstrap-creative/-/startbootstrap-creative-4.0.0.tgz",
+  "_shasum": "5cc8706b5adb4794fff5ef3f8e80a3f9718fdcfb",
+  "_shrinkwrap": null,
+  "_spec": "startbootstrap-creative",
+  "_where": "/mnt/d/projects",
+  "author": {
+    "name": "Start Bootstrap"
+  },
+  "bugs": {
+    "email": "feedback@startbootstrap.com",
+    "url": "https://github.com/BlackrockDigital/startbootstrap-creative/issues"
+  },
+  "contributors": [
+    {
+      "name": "David Miller",
+      "url": "http://davidmiller.io/"
+    }
+  ],
+  "dependencies": {
+    "bootstrap": "4.0.0",
+    "font-awesome": "4.7.0",
+    "jquery": "3.3.1",
+    "jquery.easing": "^1.4.1",
+    "magnific-popup": "^1.1.0",
+    "scrollreveal": "3.3.6"
+  },
+  "description": "Creative is a stylish one page HTML theme for Bootstrap.",
+  "devDependencies": {
+    "browser-sync": "2.23.6",
+    "gulp": "^3.9.1",
+    "gulp-clean-css": "3.9.2",
+    "gulp-header": "2.0.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.1.0",
+    "gulp-uglify": "3.0.0"
+  },
+  "directories": {},
+  "dist": {
+    "integrity": "sha512-Z5Fu5vkKIqruMwSgMEwU0Bz9l8loJmSVcFOIXs5h1MUW3p3fzteQRRmJylI4R/2dFU+eT1SkOdRceRx5s9dZ8g==",
+    "shasum": "5cc8706b5adb4794fff5ef3f8e80a3f9718fdcfb",
+    "tarball": "https://registry.npmjs.org/startbootstrap-creative/-/startbootstrap-creative-4.0.0.tgz"
+  },
+  "gitHead": "73de791c255bf8e5fff7c2e18ae5335b624224b4",
+  "homepage": "https://startbootstrap.com/template-overviews/creative",
+  "keywords": [
+    "css",
+    "html",
+    "responsive",
+    "sass",
+    "template",
+    "theme"
+  ],
+  "license": "MIT",
+  "maintainers": [
+    {
+      "name": "startbootstrap",
+      "email": "feedback@startbootstrap.com"
+    }
+  ],
+  "name": "startbootstrap-creative",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BlackrockDigital/startbootstrap-creative.git"
+  },
+  "title": "Creative",
+  "version": "4.0.0"
+}
