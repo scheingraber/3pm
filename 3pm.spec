@@ -24,7 +24,8 @@ exe = EXE(pyz,
           debug=False,
           strip=False,
           upx=False,
-          console=False )
+          console=False,
+          icon='src\\data\\icon.ico')
 coll = COLLECT(exe, Tree('src\\'),
                a.binaries,
                a.zipfiles,
