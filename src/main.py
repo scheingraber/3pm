@@ -190,6 +190,7 @@ class ProjectApp(App):
         # initialize settings
         self.use_kivy_settings = False
         self.settings_cls = SettingsWithTabbedPanel
+        self.icon = join('data', 'icon.ico')
         # initialize projects
         self.projects = Projects(name='projects', config=self.config)
         self.load_projects()
