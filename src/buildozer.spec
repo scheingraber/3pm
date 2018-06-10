@@ -7,7 +7,7 @@ title = 3PM
 package.name = PPPManager
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = org.test
+package.domain = org.chrispara
 
 # (str) Source code where the main.py live
 source.dir = .
@@ -50,7 +50,10 @@ fullscreen = 1
 
 # (list) Permissions
 #android.permissions = INTERNET
-android.permissions = VIBRATE
+android.permissions = VIBRATE,WAKE_LOCK
+
+# (bool) indicate if screen should stay on
+android.wakelock = True
 
 # (int) Android API to use
 #android.api = 14
@@ -108,4 +111,4 @@ android.permissions = VIBRATE
 [buildozer]
 
 # (int) Log level (0 = error only, 1 = info, 2 = debug (with command output))
-log_level = 1
+log_level = 2

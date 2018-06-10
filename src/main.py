@@ -32,10 +32,11 @@ from kivy.uix.settings import SettingsWithTabbedPanel
 from settings_info import timer_settings_json, ebs_settings_json
 import random
 from kivy.utils import platform
-from plyer import vibrator
 import datetime
+if platform == 'android':
+    from plyer import vibrator
 
-__version__ = '0.6.3'
+__version__ = '0.6.4'
 
 
 class MutableTextInput(FloatLayout):
