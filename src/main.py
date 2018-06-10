@@ -161,6 +161,7 @@ class Timer(Screen):
         # update sound and notification
         self.start_sound_activated = config.get('timer', 'start_sound') == '1'
         self.end_sound_activated = config.get('timer', 'end_sound') == '1'
+        self.vibration_activated = config.get('timer', 'vibrate') == '1'
         self.notification_activated = config.get('timer', 'notification') == '1'
         self.notification_timeout = float(config.get('timer', 'notification_timeout'))
         # update session length
@@ -212,25 +213,29 @@ class ProjectApp(App):
             config.setdefaults(
                 'timer', {'start_sound': 1,
                           'end_sound': 1,
+                          'vibrate': 1,
                           'notification': 1,
                           'notification_timeout': 10,
                           'session_length': 25,
                           'use_notepad': 0})
             config.setdefaults(
                 'ebs',      {'use_ebs': 1,
-                             'number_history': 50})
+                             'number_history': 50,
+                             'log_activity': 0})
         else:
             # defaults for desktop computers
             config.setdefaults(
                 'timer', {'start_sound': 1,
                           'end_sound': 1,
+                          'vibrate': 0,
                           'notification': 0,
                           'notification_timeout': 10,
                           'session_length': 25,
                           'use_notepad': 1})
             config.setdefaults(
                 'ebs',      {'use_ebs': 1,
-                             'number_history': 50})
+                             'number_history': 50,
+                             'log_activity': 1})
 
     def build_settings(self, settings):
         settings.add_json_panel('Timer',
@@ -520,7 +525,7 @@ class ProjectApp(App):
         if self.timer.start_sound_activated and self.timer.alarm_sound:
             self.timer.alarm_sound.play()
         # vibrate on android
-        if platform == 'android':
+        if self.timer.vibration_activated and platform == 'android':
             vibrator.vibrate(2)
 
     def simulate_completion(self, project_index):

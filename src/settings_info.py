@@ -3,7 +3,7 @@ import json
 # default settings for 3PM
 timer_settings_json = json.dumps([
     {'type': 'title',
-     'title': 'Sounds'},
+     'title': 'Sounds and Vibration'},
     {'type': 'bool',
      'title': 'Session Start Sound',
      'desc': 'Play sound when beginning a session',
@@ -14,6 +14,11 @@ timer_settings_json = json.dumps([
      'desc': 'Play sound when a session ends',
      'section': 'timer',
      'key': 'end_sound'},
+    {'type': 'bool',
+     'title': 'Vibrate',
+     'desc': 'Vibrate when a session ends',
+     'section': 'timer',
+     'key': 'vibrate'},
     {'type': 'title',
      'title': 'Notifications'},
     {'type': 'bool',
@@ -51,4 +56,9 @@ ebs_settings_json = json.dumps([
      'title': 'Number of Used Velocity Ratings',
      'desc': 'Number of most recent velocity ratings from estimation history to use for simulation',
      'section': 'ebs',
-     'key': 'number_history'}])
+     'key': 'number_history'},
+    {'type': 'bool',
+     'title': 'Log daily activity',
+     'desc': 'Log completed sessions per day',
+     'section': 'ebs',
+     'key': 'log_activity'}])
