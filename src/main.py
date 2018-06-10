@@ -33,6 +33,7 @@ from settings_info import timer_settings_json, ebs_settings_json
 import random
 from kivy.utils import platform
 from plyer import vibrator
+import datetime
 
 __version__ = '0.6.3'
 
@@ -512,6 +513,31 @@ class ProjectApp(App):
         # save log
         self.refresh_projects()
         self.save_projects()
+
+        # log date of completed session to file
+        if self.config.get('ebs', 'log_activity') == '1':
+            # date and count for this session
+            date_today = datetime.datetime.today().strftime('%Y-%m-%d')
+            count_today = 1
+            # read old file
+            if exists(self.activity_fn):
+                with open(self.activity_fn, 'r') as f:
+                    # read lines
+                    lines = f.readlines()
+                    # get date and count
+                    date_file, count_file = lines[-1].split()
+                    if date_file == date_today:
+                        # add count from earlier sessions today
+                        count_today += int(count_file)
+            else:
+                lines = []
+            # replace last line
+            lines = lines[:-1]
+            lines.append("%s\t%s\n" % (date_today, str(count_today)))
+            # write new file
+            with open(self.activity_fn, 'w') as f:
+                f.writelines(lines)
+
         # store flags that timer is not running down but up
         self.timer.running_down = False
         self.timer.running_up = True
@@ -564,6 +590,10 @@ class ProjectApp(App):
     @property
     def velocity_history_fn(self):
         return join(self.user_data_dir, 'velocity_history.json')
+
+    @property
+    def activity_fn(self):
+        return join(self.user_data_dir, 'daily_activity.txt')
 
 
 if __name__ == '__main__':
