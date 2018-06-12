@@ -16,7 +16,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-
+# need to set kivy configs before importing anything else
+from kivy.config import Config
+Config.set('kivy', 'exit_on_escape', 0)
+# other imports
 import json
 from os.path import join, exists
 from kivy.app import App
