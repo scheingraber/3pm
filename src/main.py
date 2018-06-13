@@ -38,6 +38,8 @@ from kivy.utils import platform
 import datetime
 if platform == 'android':
     from plyer import vibrator
+elif platform == 'win':
+    from infi.systray import SysTrayIcon
 
 __version__ = '0.6.4'
 
@@ -212,6 +214,44 @@ class ProjectApp(App):
         root.add_widget(self.projects)
         return root
 
+    def on_start(self):
+        # no current project index; trayicon starts quick session
+        self.current_project_index = -1
+        if platform == 'win':
+            # hide on minimize
+            self.root_window.on_minimize = self.root_window.hide
+            # initialize system tray
+            menu_options = (("Show", "Show 3PM Window", self.systray_show_window),
+                            ("Start Session", None, self.systray_start_work),
+                            ("Stop Session", None, self.systray_stop_work))
+            hover_text = "Personal Project Productivity Manager - 3PM"
+            self.systray = SysTrayIcon("data/icon.ico", hover_text, menu_options,
+                                       default_menu_index=1, on_quit=self.systray_close_window)
+            self.systray.start()
+
+    def on_stop(self):
+        if platform == 'win':
+            # shutdown tray icon
+            self.systray.shutdown()
+
+    def systray_show_window(self, sysTrayIcon):
+        # show root window
+        self.root_window.show()
+
+    def systray_close_window(self, sysTrayIcon):
+        # stop app
+        exit()
+
+    def systray_start_work(self, sysTrayIcon):
+        if self.current_project_index == -1:
+            self.quick_session()
+        else:
+            self.edit_project(self.current_project_index)
+            self.start_work(self.current_project_index)
+
+    def systray_stop_work(self, sysTrayIcon):
+        self.stop_work(self.current_project_index)
+
     def build_config(self, config):
         if platform == 'android':
             # android defaults
@@ -313,6 +353,7 @@ class ProjectApp(App):
         self.refresh_projects()
 
     def edit_project(self, project_index):
+        self.current_project_index = project_index
         project = self.projects.data[project_index]
         name = 'project{}'.format(project_index)
 
@@ -355,14 +396,15 @@ class ProjectApp(App):
         self.update_simulation_string(project_index)
 
     def quick_session(self):
-        # remove previous quick view screen
-        if self.root.has_screen(""):
-            self.root.remove_widget(self.root.get_screen(""))
-        view = QuickView(project_content="")
-        self.root.add_widget(view)
-        self.transition.direction = 'left'
-        self.root.current = view.name
-        self.current_project_index = -1
+        if not self.root.current == '':
+            # remove previous quick view screen
+            if self.root.has_screen(''):
+                self.root.remove_widget(self.root.get_screen(''))
+            view = QuickView(project_content='')
+            self.root.add_widget(view)
+            self.transition.direction = 'left'
+            self.root.current = view.name
+            self.current_project_index = -1
         self.start_timer()
 
     def add_project(self):
@@ -601,4 +643,5 @@ class ProjectApp(App):
 
 
 if __name__ == '__main__':
+    # start app
     ProjectApp().run()
