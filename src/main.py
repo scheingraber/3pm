@@ -45,7 +45,7 @@ if platform == 'android':
 elif platform == 'win':
     from infi.systray import SysTrayIcon
 
-__version__ = '0.6.5'
+__version__ = '0.6.6'
 
 
 class ProjectApp(App):
@@ -107,7 +107,10 @@ class ProjectApp(App):
 
     def systray_close_window(self, sysTrayIcon):
         # stop app
-        exit(0)
+        try:
+            App.get_running_app().stop()
+        except:
+            exit(0)
 
     def build_config(self, config):
         if platform == 'android':
