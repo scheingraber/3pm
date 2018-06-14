@@ -45,7 +45,7 @@ if platform == 'android':
 elif platform == 'win':
     from infi.systray import SysTrayIcon
 
-__version__ = '0.6.4'
+__version__ = '0.6.5'
 
 
 class ProjectApp(App):
