@@ -215,18 +215,13 @@ class ProjectApp(App):
         return root
 
     def on_start(self):
-        # no current project index; trayicon starts quick session
+        # no current project index
         self.current_project_index = -1
         if platform == 'win':
-            # hide on minimize
-            self.root_window.on_minimize = self.root_window.hide
             # initialize system tray
-            menu_options = (("Show", "Show 3PM Window", self.systray_show_window),
-                            ("Start Session", None, self.systray_start_work),
-                            ("Stop Session", None, self.systray_stop_work))
+            menu_options = (("Show Session Info", "Show current task and remaining time.", self.systray_show_info),)
             hover_text = "Personal Project Productivity Manager - 3PM"
-            self.systray = SysTrayIcon("data/icon.ico", hover_text, menu_options,
-                                       default_menu_index=1, on_quit=self.systray_close_window)
+            self.systray = SysTrayIcon("data/icon.ico", hover_text, menu_options, default_menu_index=0, on_quit=self.systray_close_window)
             self.systray.start()
 
     def on_stop(self):
@@ -234,23 +229,26 @@ class ProjectApp(App):
             # shutdown tray icon
             self.systray.shutdown()
 
-    def systray_show_window(self, sysTrayIcon):
-        # show root window
-        self.root_window.show()
+    def systray_show_info(self, sysTrayIcon):
+        # remaining time
+        if self.timer.running_down:
+            message_time = '%s remaining!' % self.timer.time_string
+        elif self.timer.running_up:
+            message_time = 'On break since %s.' % self.timer.time_string
+        else:
+            message_time = 'No session running.'
+        # project string
+        if self.current_project_index == -1:
+            project_title = 'Quick Session'
+        else:
+            project_title = self.projects.data[self.current_project_index]['title']
+        # show notification
+        self.timer.notification_wrapper.notify(title=project_title, message=message_time,
+                                               timeout=self.timer.notification_timeout)
 
     def systray_close_window(self, sysTrayIcon):
         # stop app
-        exit()
-
-    def systray_start_work(self, sysTrayIcon):
-        if self.current_project_index == -1:
-            self.quick_session()
-        else:
-            self.edit_project(self.current_project_index)
-            self.start_work(self.current_project_index)
-
-    def systray_stop_work(self, sysTrayIcon):
-        self.stop_work(self.current_project_index)
+        exit(0)
 
     def build_config(self, config):
         if platform == 'android':
@@ -461,6 +459,7 @@ class ProjectApp(App):
         # go to project view
         self.transition.direction = 'right'
         self.root.current = 'projects'
+        self.current_project_index = -1
 
     def start_work(self, project_index):
         # start new session if timer completely stopped
@@ -469,7 +468,6 @@ class ProjectApp(App):
             self.start_timer()
             # set current project index
             self.current_project_index = project_index
-
         # or reset and start new session if timer runs up
         if self.timer.running_up:
             # stop counting up
@@ -514,6 +512,8 @@ class ProjectApp(App):
         # play start sound if file found
         if self.timer.start_sound_activated and self.timer.start_sound:
             self.timer.start_sound.play()
+        # hide main window if option activated
+        self.root_window.hide()
 
     def stop_timer(self):
         # stop in- or decrementing time
@@ -559,6 +559,9 @@ class ProjectApp(App):
         # save log
         self.refresh_projects()
         self.save_projects()
+        # show main window
+        self.root_window.show()
+        self.root_window.show()
 
         # log date of completed session to file
         if self.config.get('ebs', 'log_activity') == '1':
