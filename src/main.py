@@ -19,6 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # need to set kivy configs before importing anything else
 from kivy.config import Config
 Config.set('kivy', 'exit_on_escape', 0)
+Config.set('graphics', 'minimum_width', '600')
+Config.set('graphics', 'minimum_height', '500')
+
 
 # import 3PM classes
 from timer import Timer
