@@ -7,7 +7,6 @@ ebs==0.1.dev0
 future==0.16.0
 idna==2.6
 Kivy==1.10.0
-Kivy-Garden==0.1.4
 kivy.deps.glew==0.1.9
 kivy.deps.sdl2==0.1.17
 macholib==1.9
@@ -20,3 +19,4 @@ pywin32==223
 requests==2.18.4
 urllib3==1.22
 wincertstore==0.2
+infi.systray==0.1.11
