@@ -38,6 +38,8 @@ from kivy.clock import Clock
 from kivy.uix.settings import SettingsWithTabbedPanel
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.image import Image
+from kivy.uix.popup import Popup
+from kivy.uix.button import Button
 from settings_info import timer_settings_json, ebs_settings_json
 import random
 from kivy.utils import platform
@@ -52,7 +54,11 @@ __version__ = '0.6.6'
 
 class ImageButton(ButtonBehavior, Image):
     def on_press(self):
-        print ('pressed')
+        content = Button(text='Close me!')
+        popup = Popup(title='Personal Project Productivity Manager (3PM) - 0.6.6 - Usage Manual and About', content=content,
+                      auto_dismiss=True)
+        content.bind(on_press=popup.dismiss)
+        popup.open()
 
 
 class ProjectApp(App):
