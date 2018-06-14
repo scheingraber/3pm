@@ -36,6 +36,8 @@ from kivy.uix.screenmanager import ScreenManager, SlideTransition
 from kivy.properties import StringProperty
 from kivy.clock import Clock
 from kivy.uix.settings import SettingsWithTabbedPanel
+from kivy.uix.behaviors import ButtonBehavior
+from kivy.uix.image import Image
 from settings_info import timer_settings_json, ebs_settings_json
 import random
 from kivy.utils import platform
@@ -46,6 +48,11 @@ elif platform == 'win':
     from infi.systray import SysTrayIcon
 
 __version__ = '0.6.6'
+
+
+class ImageButton(ButtonBehavior, Image):
+    def on_press(self):
+        print ('pressed')
 
 
 class ProjectApp(App):
