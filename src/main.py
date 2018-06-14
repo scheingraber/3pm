@@ -22,7 +22,7 @@ Config.set('kivy', 'exit_on_escape', 0)
 
 # import 3PM classes
 from timer import Timer
-from projectsview import Projects, ProjectView, ProjectViewWithoutNotepad, ProjectViewSimple,\
+from projects_view import Projects, ProjectView, ProjectViewWithoutNotepad, ProjectViewSimple,\
                          ProjectViewSimpleWithoutNotepad, QuickView
 
 # third party imports
@@ -110,9 +110,10 @@ class ProjectApp(App):
                 'timer', {'start_sound': 1,
                           'end_sound': 1,
                           'vibrate': 1,
-                          'notification': 1,
+                          'notification': 0,
                           'notification_timeout': 10,
                           'session_length': 25,
+                          'hide_window': 0,
                           'use_notepad': 0})
             config.setdefaults(
                 'ebs',      {'use_ebs': 1,
@@ -124,14 +125,15 @@ class ProjectApp(App):
                 'timer', {'start_sound': 1,
                           'end_sound': 1,
                           'vibrate': 0,
-                          'notification': 0,
+                          'notification': 1,
                           'notification_timeout': 10,
                           'session_length': 25,
+                          'hide_window': 0,
                           'use_notepad': 1})
             config.setdefaults(
                 'ebs',      {'use_ebs': 1,
                              'number_history': 50,
-                             'log_activity': 1})
+                             'log_activity': 0})
 
     def build_settings(self, settings):
         settings.add_json_panel('Timer',
@@ -366,7 +368,8 @@ class ProjectApp(App):
         if self.timer.start_sound_activated and self.timer.start_sound:
             self.timer.start_sound.play()
         # hide main window if option activated
-        self.root_window.hide()
+        if platform == 'win' and self.config.get('timer', 'hide_window') == '1':
+            self.root_window.hide()
 
     def stop_timer(self):
         # stop in- or decrementing time
@@ -412,9 +415,10 @@ class ProjectApp(App):
         # save log
         self.refresh_projects()
         self.save_projects()
-        # show main window
-        self.root_window.show()
-        self.root_window.show()
+        if platform == 'win' and self.config.get('timer', 'hide_window') == '1':
+            # show main window again - twice to get focus
+            self.root_window.show()
+            self.root_window.show()
 
         # log date of completed session to file
         if self.config.get('ebs', 'log_activity') == '1':
