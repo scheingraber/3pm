@@ -83,12 +83,15 @@ class ProjectApp(App):
     def on_stop(self):
         if platform == 'win':
             # shutdown tray icon
-            self.systray.shutdown()
+            try:
+                self.systray.shutdown()
+            except:
+                pass
 
     def systray_show_info(self, sysTrayIcon):
         # remaining time
         if self.timer.running_down:
-            message_time = '%s remaining!' % self.timer.time_string
+            message_time = '%s remaining.' % self.timer.time_string
         elif self.timer.running_up:
             message_time = 'On break since %s.' % self.timer.time_string
         else:
@@ -419,8 +422,7 @@ class ProjectApp(App):
         self.refresh_projects()
         self.save_projects()
         if platform == 'win' and self.config.get('timer', 'hide_window') == '1':
-            # show main window again - twice to get focus
-            self.root_window.show()
+            # show main window again
             self.root_window.show()
         # log date of completed session to file
         if self.config.get('ebs', 'log_activity') == '1':
