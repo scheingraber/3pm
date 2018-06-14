@@ -120,7 +120,7 @@ class ProjectApp(App):
                           'use_notepad': 0})
             config.setdefaults(
                 'ebs',      {'use_ebs': 1,
-                             'number_history': 50,
+                             'number_history': 30,
                              'log_activity': 0})
         else:
             # defaults for desktop computers
@@ -135,8 +135,8 @@ class ProjectApp(App):
                           'use_notepad': 1})
             config.setdefaults(
                 'ebs',      {'use_ebs': 1,
-                             'number_history': 50,
-                             'log_activity': 0})
+                             'number_history': 30,
+                             'log_activity': 1})
 
     def build_settings(self, settings):
         settings.add_json_panel('Timer',
@@ -422,7 +422,6 @@ class ProjectApp(App):
             # show main window again - twice to get focus
             self.root_window.show()
             self.root_window.show()
-
         # log date of completed session to file
         if self.config.get('ebs', 'log_activity') == '1':
             # date and count for this session
@@ -438,10 +437,11 @@ class ProjectApp(App):
                     if date_file == date_today:
                         # add count from earlier sessions today
                         count_today += int(count_file)
+                        # remove last line with current log for today
+                        lines = lines[:-1]
             else:
                 lines = []
-            # replace last line
-            lines = lines[:-1]
+            # append new last line
             lines.append("%s\t%s\n" % (date_today, str(count_today)))
             # write new file
             with open(self.activity_fn, 'w') as f:
