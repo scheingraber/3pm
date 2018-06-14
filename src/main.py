@@ -49,14 +49,31 @@ if platform == 'android':
 elif platform == 'win':
     from infi.systray import SysTrayIcon
 
-__version__ = '0.6.6'
+__version__ = '0.6.7'
 
 
 class ImageButton(ButtonBehavior, Image):
     def on_press(self):
-        content = Button(text='Close me!')
-        popup = Popup(title='Personal Project Productivity Manager (3PM) - 0.6.6 - Usage Manual and About', content=content,
-                      auto_dismiss=True)
+        info = 'Info:\n' \
+               '3PM is a task based Pomodoro timer.\n' \
+               'So you, too, can leave the office every day by 3 p.m.!\n' \
+               'More Info: http://3pm.scheingraber.net\n\n' \
+               'Usage:\n- add tasks you want to work on\n' \
+               '- you can enter a title and note for each task\n' \
+               '- enter the number of sessions you plan to spend on each task\n' \
+               '- click \'Start\' and start working until the session is over\n' \
+               '- take a short break and repeat\n' \
+               '- when you are finished with a task click \'Finished\'\n' \
+               '- for each finished task, 3PM learns a velocity rating\n' \
+               '  (the ratio of your actually needed to planned sessions)\n' \
+               '- for new tasks, you get a probability distribution based on your old ratings\n' \
+               '  (in the lower right, corresponding to 25%,50%,75%,100% quantiles)\n' \
+               '- this tells you how many sessions you will at most need\n' \
+               '  (with the corresponding probability)\n\n' \
+               'Author:\nChris Scheingraber\n3pm@scheingraber.net\nwww.scheingraber.net'
+        content = Button(text=info)
+        title = 'Personal Project Productivity Manager - 3PM - Version %s' % __version__
+        popup = Popup(title=title, content=content, auto_dismiss=True)
         content.bind(on_press=popup.dismiss)
         popup.open()
 
