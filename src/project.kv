@@ -10,20 +10,6 @@
             size: self.size
 
 
-<MutableLabelTextInput@MutableTextInput>:
-    Label:
-        id: w_label
-        pos: root.pos
-        text: root.text
-
-    TextInput:
-        id: w_textinput
-        pos: root.pos
-        text: root.text
-        multiline: root.multiline
-        on_focus: root.check_focus_and_view(self)
-
-
 <MutableRstDocumentTextInput@MutableTextInput>:
     RstDocument:
         id: w_label
@@ -124,7 +110,7 @@
                 width: 1.5*self.height
                 on_release: app.go_projects(root.project_index)
 
-            MutableLabelTextInput:
+            TextInput:
                 text: root.project_title
                 font_size: '16sp'
                 multiline: False
@@ -184,8 +170,9 @@
                         halign: 'center'
                         valign: 'middle'
 
-                    MutableLabelTextInput:
+                    TextInput:
                         font_size: '16sp'
+                        width: 2 * self.height
                         multiline: False
                         on_text: root.project_estimated = self.text
                         text: str("%i" % root.project_estimated)
@@ -245,7 +232,7 @@
                 width: 1.5*self.height
                 on_release: app.go_projects(root.project_index)
 
-            MutableLabelTextInput:
+            TextInput:
                 text: root.project_title
                 font_size: '16sp'
                 multiline: False
@@ -309,7 +296,7 @@
                         halign: 'center'
                         valign: 'middle'
 
-                    MutableLabelTextInput:
+                    TextInput:
                         font_size: '16sp'
                         multiline: False
                         on_text: root.project_estimated = self.text
@@ -368,7 +355,7 @@
                 width: 1.5*self.height
                 on_release: app.go_projects(root.project_index)
 
-            MutableLabelTextInput:
+            TextInput:
                 text: root.project_title
                 font_size: '16sp'
                 multiline: False
@@ -444,7 +431,7 @@
                 width: 1.5*self.height
                 on_release: app.go_projects(root.project_index)
 
-            MutableLabelTextInput:
+            TextInput:
                 text: root.project_title
                 font_size: '16sp'
                 multiline: False
