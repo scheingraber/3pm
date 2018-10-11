@@ -49,7 +49,7 @@ if platform == 'android':
 elif platform == 'win':
     from infi.systray import SysTrayIcon
 
-__version__ = '0.6.7'
+__version__ = '0.6.8'
 
 
 class ImageButton(ButtonBehavior, Image):
@@ -85,6 +85,9 @@ class ProjectApp(App):
         self.use_kivy_settings = False
         self.settings_cls = SettingsWithTabbedPanel
         self.icon = join('data', 'icon.ico')
+        # read configuration file
+        self.config.filename = '.pppm.ini'
+        self.config.read(self.config.filename)
         # initialize projects
         self.projects = Projects(name='projects', config=self.config)
         self.load_projects()
@@ -111,6 +114,7 @@ class ProjectApp(App):
             self.systray.start()
 
     def on_stop(self):
+        self.config.write()
         if platform == 'win':
             # shutdown tray icon
             try:
