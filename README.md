@@ -30,10 +30,10 @@ Find out more on the [official website](https://scheingraber.github.io/3pm/)!
 
 ## Installation
 ### Windows
-You can use the provided self-extracting archive from [Github releases](https://github.com/scheingraber/3pm/releases).
+You can use the provided *exe* (self-extracting archive) from [Github releases](https://github.com/scheingraber/3pm/releases).
 
 ### Android
-Use the provided apk from [Github releases](https://github.com/scheingraber/3pm/releases).
+Use the provided *apk* from [Github releases](https://github.com/scheingraber/3pm/releases).
 
 ### Linux
 Dependencies:
@@ -56,5 +56,8 @@ git clone https://github.com/scheingraber/3pm
 python 3pm/src/main.py
 ```
 
-### macOS and iOS
-Should work on macOS using the steps for Linux, but this has not been tested. An iOS package will be provided in the near future.
+### macOS
+Use the provided *dmg* from [Github releases](https://github.com/scheingraber/3pm/releases).
+
+## iOS
+An iOS package will be provided in the near future.
