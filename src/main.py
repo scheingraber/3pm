@@ -44,7 +44,7 @@ from settings_info import timer_settings_json, ebs_settings_json
 import random
 from kivy.utils import platform
 import datetime
-if platform == 'android':
+if platform in ['android','ios']:
     from plyer import vibrator
 elif platform == 'win':
     from infi.systray import SysTrayIcon
@@ -147,8 +147,8 @@ class ProjectApp(App):
             exit(0)
 
     def build_config(self, config):
-        if platform == 'android':
-            # android defaults
+        if platform in ['android','ios']:
+            # smartphone defaults
             config.setdefaults(
                 'timer', {'start_sound': 1,
                           'end_sound': 1,
@@ -498,8 +498,8 @@ class ProjectApp(App):
         # play alarm sound if file found
         if self.timer.start_sound_activated and self.timer.alarm_sound:
             self.timer.alarm_sound.play()
-        # vibrate on android
-        if self.timer.vibration_activated and platform == 'android':
+        # vibrate on smartphone
+        if self.timer.vibration_activated and platform in ['android','ios']:
             vibrator.vibrate(2)
 
     def simulate_completion(self, project_index):

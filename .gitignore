@@ -7,3 +7,4 @@ src/bin
 src/.buildozer
 *.pyc
 *.ini
+*.DS_Store

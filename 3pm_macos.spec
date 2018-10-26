@@ -36,5 +36,5 @@ coll = COLLECT(exe, Tree('src/'),
                name='3pm')
 app = BUNDLE(coll,
              name='3pm.app',
-             icon='src/data/icon.ico',
+             icon='src/data/icon_macos.png',
              bundle_identifier=None)
