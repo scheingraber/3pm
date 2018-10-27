@@ -60,4 +60,4 @@ python 3pm/src/main.py
 Use the provided *dmg* from [Github releases](https://github.com/scheingraber/3pm/releases).
 
 ## iOS
-An iOS package will be provided in the near future.
+Use the provided *ipa* from [Github releases](https://github.com/scheingraber/3pm/releases).
