@@ -30,7 +30,9 @@ Find out more on the [official website](https://scheingraber.github.io/3pm/)!
 
 ## Installation
 ### Windows
-You can use the provided standalone and portable *exe* from [Github releases](https://github.com/scheingraber/3pm/releases).
+On [Github releases](https://github.com/scheingraber/3pm/releases), you have the choice of:
+* self-extracing archive of the portable app
+* standalone executable packaged with Enigma Virtual Box (some antivirus tools might give a false alarm!)
 
 ### Android
 Use the provided *apk* from [Github releases](https://github.com/scheingraber/3pm/releases).
