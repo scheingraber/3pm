@@ -30,7 +30,7 @@ Find out more on the [official website](https://scheingraber.github.io/3pm/)!
 
 ## Installation
 ### Windows
-You can use the provided *exe* (self-extracting archive) from [Github releases](https://github.com/scheingraber/3pm/releases).
+You can use the provided standalone and portable *exe* from [Github releases](https://github.com/scheingraber/3pm/releases).
 
 ### Android
 Use the provided *apk* from [Github releases](https://github.com/scheingraber/3pm/releases).
