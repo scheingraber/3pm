@@ -1,6 +1,8 @@
 import json
 
-# default settings for 3PM
+# default settings
+
+# timer
 timer_settings_json = json.dumps([
     {'type': 'title',
      'title': 'Sounds and Vibration'},
@@ -38,11 +40,6 @@ timer_settings_json = json.dumps([
      'desc': 'Session interval length [in minutes]',
      'section': 'timer',
      'key': 'session_length'},
-    {'type': 'bool',
-     'title': 'Hide Timer Window During Session',
-     'desc': 'Hide 3PM during session and show again when finished',
-     'section': 'timer',
-     'key': 'hide_window'},
     {'type': 'title',
      'title': 'Notepad'},
     {'type': 'bool',
@@ -51,6 +48,7 @@ timer_settings_json = json.dumps([
      'section': 'timer',
      'key': 'use_notepad'}])
 
+# simulation
 ebs_settings_json = json.dumps([
     {'type': 'bool',
      'title': 'Enable Logging and Simulation',
@@ -67,3 +65,21 @@ ebs_settings_json = json.dumps([
      'desc': 'Log completed sessions per day',
      'section': 'ebs',
      'key': 'log_activity'}])
+
+# system
+system_settings_json = json.dumps([
+    {'type': 'bool',
+     'title': 'Enable Tray Icon',
+     'desc': 'Enable tray icon on Windows OS',
+     'section': 'system',
+     'key': 'enable_tray'},
+    {'type': 'bool',
+     'title': 'Hide Timer Window During Session',
+     'desc': 'Hide 3PM during session and show again when finished',
+     'section': 'system',
+     'key': 'hide_window'},
+    {'type': 'bool',
+     'title': 'Store Data in App Folder',
+     'desc': 'Store Data in app folder instead of user data folder (requires write permission)',
+     'section': 'system',
+     'key': 'store_in_app'}])

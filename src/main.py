@@ -18,19 +18,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 # need to set kivy configs before importing anything else
 from kivy.config import Config
+
 Config.set('kivy', 'exit_on_escape', 0)
 Config.set('graphics', 'minimum_width', '600')
 Config.set('graphics', 'minimum_height', '500')
 
-
 # import 3PM classes
 from timer import Timer
-from projects_view import Projects, ProjectView, ProjectViewWithoutNotepad, ProjectViewSimple,\
-                         ProjectViewSimpleWithoutNotepad, QuickView
+from projects_view import Projects, ProjectView, ProjectViewWithoutNotepad, ProjectViewSimple, \
+    ProjectViewSimpleWithoutNotepad, QuickView
 
 # third party imports
 import json
-from os.path import join, exists
+from os import remove
+from os.path import join, isfile, realpath, dirname
+from shutil import move
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, SlideTransition
 from kivy.properties import StringProperty
@@ -40,16 +42,17 @@ from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.image import Image
 from kivy.uix.popup import Popup
 from kivy.uix.button import Button
-from settings_info import timer_settings_json, ebs_settings_json
+import settings_info
 import random
 from kivy.utils import platform
 import datetime
-if platform in ['android','ios']:
+
+if platform in ['android', 'ios']:
     from plyer import vibrator
 elif platform == 'win':
     from infi.systray import SysTrayIcon
 
-__version__ = '0.6.8'
+__version__ = '0.6.9'
 
 
 class ImageButton(ButtonBehavior, Image):
@@ -80,13 +83,28 @@ class ImageButton(ButtonBehavior, Image):
 
 class ProjectApp(App):
     def build(self):
+        # delete unnecessary default config file to avoid overloading App.get_application_config
+        try:
+            remove('project.ini')
+        except:
+            pass
+        # check if config file in app dir exists
+        self.custom_config_name = 'pppm.ini'
+        self.app_folder = dirname(realpath(__file__))
+        self.app_folder_config_fn = join(self.app_folder, self.custom_config_name)
+        if isfile(self.app_folder_config_fn):
+            # config is in app dir
+            self.config.filename = self.app_folder_config_fn
+        else:
+            # config is in user dir
+            self.config.filename = join(self.user_data_dir, self.custom_config_name)
+        # title
         self.title = '3PM'
         # initialize settings
         self.use_kivy_settings = False
         self.settings_cls = SettingsWithTabbedPanel
         self.icon = join('data', 'icon.ico')
         # read configuration file
-        self.config.filename = '.pppm.ini'
         self.config.read(self.config.filename)
         # initialize projects
         self.projects = Projects(name='projects', config=self.config)
@@ -103,14 +121,123 @@ class ProjectApp(App):
         root.add_widget(self.projects)
         return root
 
+    def build_config(self, config):
+        if platform in ['android', 'ios']:
+            # smartphone defaults
+            config.setdefaults(
+                'timer', {'start_sound': 1,
+                          'end_sound': 1,
+                          'vibrate': 1,
+                          'notification': 0,
+                          'notification_timeout': 10,
+                          'session_length': 25,
+                          'use_notepad': 0})
+            config.setdefaults(
+                'ebs', {'use_ebs': 1,
+                        'number_history': 30,
+                        'log_activity': 0})
+            config.setdefaults(
+                'system', {'enable_tray': 0,
+                           'hide_window': 0,
+                           'store_in_app': 0})
+        else:
+            # defaults for desktop computers
+            config.setdefaults(
+                'timer', {'start_sound': 1,
+                          'end_sound': 1,
+                          'vibrate': 0,
+                          'notification': 1,
+                          'notification_timeout': 10,
+                          'session_length': 25,
+                          'use_notepad': 1})
+            config.setdefaults(
+                'ebs', {'use_ebs': 1,
+                        'number_history': 30,
+                        'log_activity': 1})
+            config.setdefaults(
+                'system', {'enable_tray': 1,
+                           'hide_window': 0,
+                           'store_in_app': 0})
+
+    def build_settings(self, settings):
+        settings.add_json_panel('Timer',
+                                self.config,
+                                data=settings_info.timer_settings_json)
+        settings.add_json_panel('Simulation',
+                                self.config,
+                                data=settings_info.ebs_settings_json)
+        settings.add_json_panel('System',
+                                self.config,
+                                data=settings_info.system_settings_json)
+
+    def on_config_change(self, config, section, key, value):
+        # react on store_in_app config change
+        if section == 'system' and key == 'store_in_app':
+            if value == '0':
+                try:
+                    # move data to user folder
+                    move_if_exists(join(self.app_folder, 'projects.json'), join(self.user_data_dir, 'projects.json'))
+                    move_if_exists(join(self.app_folder, 'velocity_history.json'), join(self.user_data_dir, 'velocity_history.json'))
+                    move_if_exists(join(self.app_folder, 'daily_activity.txt'), join(self.user_data_dir, 'daily_activity.txt'))
+                    # write config to user folder
+                    self.config.filename = join(self.user_data_dir, self.custom_config_name)
+                    self.config.write()
+                    # remove old config file
+                    remove(self.app_folder_config_fn)
+                except:
+                    # failed to move to new dir, undo config change
+                    self.config.set('system', 'store_in_app', '1')
+            else:
+                try:
+                    # move data to app folder
+                    move_if_exists(join(self.user_data_dir, 'projects.json'), join(self.app_folder, 'projects.json'))
+                    move_if_exists(join(self.user_data_dir, 'velocity_history.json'), join(self.app_folder, 'velocity_history.json'))
+                    move_if_exists(join(self.user_data_dir, 'daily_activity.txt'), join(self.app_folder, 'daily_activity.txt'))
+                    # write config to app folder
+                    self.config.filename = join(self.app_folder, self.custom_config_name)
+                    self.config.write()
+                    # remove old config file
+                    remove(join(self.user_data_dir, self.custom_config_name))
+                except:
+                    # failed to move to new dir, undo config change
+                    self.config.set('system', 'store_in_app', '0')
+
+        # react on enable_tray config change
+        if section == 'system' and key == 'enable_tray' and platform == 'win':
+            if value == '0':
+                # shutdown tray icon
+                try:
+                    self.systray.shutdown()
+                except:
+                    pass
+            else:
+                # initialize system tray - todo: encapsulate
+                menu_options = (("Show Session Info", "Show current task and remaining time.", self.systray_show_info),)
+                hover_text = "Personal Project Productivity Manager - 3PM"
+                self.systray = SysTrayIcon("data/icon.ico", hover_text, menu_options, default_menu_index=0,
+                                           on_quit=self.systray_close_window)
+                self.systray.start()
+
+        # reinitialize timer
+        self.timer.init(config)
+        # reinitialize projects
+        self.projects = Projects(name='projects', config=config)
+        self.load_projects()
+        # update projects view config
+        self.projects.use_ebs = config.get('ebs', 'use_ebs') == '1'
+        self.root.remove_widget(self.root.get_screen('projects'))
+        self.root.add_widget(self.projects)
+        self.root.current = 'projects'
+
     def on_start(self):
         # no current project index
         self.current_project_index = -1
-        if platform == 'win':
-            # initialize system tray
+        if platform == 'win' and self.config.get('system', 'enable_tray') == '1':
+            # initialize system tray - todo: encapsulate
             menu_options = (("Show Session Info", "Show current task and remaining time.", self.systray_show_info),)
             hover_text = "Personal Project Productivity Manager - 3PM"
-            self.systray = SysTrayIcon("data/icon.ico", hover_text, menu_options, default_menu_index=0, on_quit=self.systray_close_window)
+            self.systray = SysTrayIcon("data/icon.ico", hover_text, menu_options, default_menu_index=0,
+                                       on_quit=self.systray_close_window)
             self.systray.start()
 
     def on_stop(self):
@@ -140,67 +267,16 @@ class ProjectApp(App):
                                                timeout=self.timer.notification_timeout)
 
     def systray_close_window(self, sysTrayIcon):
-        # stop app
-        try:
-            App.get_running_app().stop()
-        except:
-            exit(0)
-
-    def build_config(self, config):
-        if platform in ['android','ios']:
-            # smartphone defaults
-            config.setdefaults(
-                'timer', {'start_sound': 1,
-                          'end_sound': 1,
-                          'vibrate': 1,
-                          'notification': 0,
-                          'notification_timeout': 10,
-                          'session_length': 25,
-                          'hide_window': 0,
-                          'use_notepad': 0})
-            config.setdefaults(
-                'ebs',      {'use_ebs': 1,
-                             'number_history': 30,
-                             'log_activity': 0})
-        else:
-            # defaults for desktop computers
-            config.setdefaults(
-                'timer', {'start_sound': 1,
-                          'end_sound': 1,
-                          'vibrate': 0,
-                          'notification': 1,
-                          'notification_timeout': 10,
-                          'session_length': 25,
-                          'hide_window': 0,
-                          'use_notepad': 1})
-            config.setdefaults(
-                'ebs',      {'use_ebs': 1,
-                             'number_history': 30,
-                             'log_activity': 1})
-
-    def build_settings(self, settings):
-        settings.add_json_panel('Timer',
-                                self.config,
-                                data=timer_settings_json)
-        settings.add_json_panel('Simulation',
-                                self.config,
-                                data=ebs_settings_json)
-
-    def on_config_change(self, config, section, key, value):
-        # reinitialize timer
-        self.timer.init(config)
-        # reinitialize projects
-        self.projects = Projects(name='projects', config=config)
-        self.load_projects()
-        # update projects view config
-        self.projects.use_ebs = config.get('ebs', 'use_ebs') == '1'
-        self.root.remove_widget(self.root.get_screen('projects'))
-        self.root.add_widget(self.projects)
-        self.root.current = 'projects'
+        # stop app if not called from traybar menu (not settings change)
+        if self.config.get('system', 'enable_tray') == '1':
+            try:
+                App.get_running_app().stop()
+            except:
+                exit(0)
 
     def load_velocity_history(self):
         # load velocity history from file
-        if exists(self.velocity_history_fn):
+        if isfile(self.velocity_history_fn):
             with open(self.velocity_history_fn) as fd:
                 self.velocity_history = json.load(fd)
         else:
@@ -214,7 +290,7 @@ class ProjectApp(App):
 
     def load_projects(self):
         # load projects from file
-        if not exists(self.projects_fn):
+        if not isfile(self.projects_fn):
             return
         with open(self.projects_fn) as fd:
             data = json.load(fd)
@@ -411,7 +487,7 @@ class ProjectApp(App):
         if self.timer.start_sound_activated and self.timer.start_sound:
             self.timer.start_sound.play()
         # hide main window if option activated
-        if platform == 'win' and self.config.get('timer', 'hide_window') == '1':
+        if platform == 'win' and self.config.get('system', 'hide_window') == '1':
             self.root_window.hide()
 
     def stop_timer(self):
@@ -458,7 +534,7 @@ class ProjectApp(App):
         # save log
         self.refresh_projects()
         self.save_projects()
-        if platform == 'win' and self.config.get('timer', 'hide_window') == '1':
+        if platform == 'win' and self.config.get('system', 'hide_window') == '1':
             # show main window again
             self.root_window.show()
         # log date of completed session to file
@@ -467,7 +543,7 @@ class ProjectApp(App):
             date_today = datetime.datetime.today().strftime('%Y-%m-%d')
             count_today = 1
             # read old file
-            if exists(self.activity_fn):
+            if isfile(self.activity_fn):
                 with open(self.activity_fn, 'r') as f:
                     # read lines
                     lines = f.readlines()
@@ -499,7 +575,7 @@ class ProjectApp(App):
         if self.timer.start_sound_activated and self.timer.alarm_sound:
             self.timer.alarm_sound.play()
         # vibrate on smartphone
-        if self.timer.vibration_activated and platform in ['android','ios']:
+        if self.timer.vibration_activated and platform in ['android', 'ios']:
             vibrator.vibrate(2)
 
     def simulate_completion(self, project_index):
@@ -522,26 +598,40 @@ class ProjectApp(App):
         quartiles = [sessions_needed[i] for i in [24, 49, 74, 99]]
         # calc completion
         logged = float(self.projects.data[project_index]['logged'])
-        completion = [logged*100 / quartiles[i] for i in [0, 1, 2, 3]]
+        completion = [logged * 100 / quartiles[i] for i in [0, 1, 2, 3]]
         return quartiles, completion
 
     def update_simulation_string(self, project_index):
         # simulate completion of project
         quartiles, completion = self.simulate_completion(project_index)
-        simulation_string = "%i/%i/%i/%i\n%i%%/%i%%/%i%%/%i%%" % tuple(quartiles+completion)
+        simulation_string = "%i/%i/%i/%i\n%i%%/%i%%/%i%%/%i%%" % tuple(quartiles + completion)
         self.timer.update_simulation_string(simulation_string)
 
     @property
+    def data_dir(self):
+        # get settings and data dir
+        if self.config.get('system', 'store_in_app') == '1':
+            return dirname(realpath(__file__))
+        else:
+            return self.user_data_dir
+
+    @property
     def projects_fn(self):
-        return join(self.user_data_dir, 'projects.json')
+        return join(self.data_dir, 'projects.json')
 
     @property
     def velocity_history_fn(self):
-        return join(self.user_data_dir, 'velocity_history.json')
+        return join(self.data_dir, 'velocity_history.json')
 
     @property
     def activity_fn(self):
-        return join(self.user_data_dir, 'daily_activity.txt')
+        return join(self.data_dir, 'daily_activity.txt')
+
+
+def move_if_exists(src, dst):
+    # move file from src to dst if src file exists
+    if isfile(src):
+        move(src, dst)
 
 
 if __name__ == '__main__':
