@@ -515,7 +515,7 @@ class ProjectApp(App):
     def increment_time(self, interval):
         # increment time of timer
         self.timer.seconds += 1
-        if self.timer.seconds > 60:
+        if self.timer.seconds >= 60:
             self.timer.minutes += 1
             self.timer.seconds = 0
         self.timer.update_time_string()
